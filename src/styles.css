@@ -363,7 +363,32 @@ html.js .change__panel.is-active { animation: panel-in .9s var(--ease-out) both;
 }
 .change__num { padding-top: .6em; font-size: .8rem; color: var(--accent); letter-spacing: .02em; }
 .change__text { margin: 0; max-width: 30rem; font-size: var(--step-2); line-height: 1.2; letter-spacing: -.02em; }
-html:not(.js) .change__next { display: none; }
+html:not(.js) .change__nav { display: none; }
+.change__nav { display: flex; flex-wrap: wrap; gap: .75rem; }
+.btn--line { background: transparent; color: var(--fg); border-color: var(--line); }
+.btn--line:hover { border-color: var(--fg); }
+.btn:disabled { opacity: .35; pointer-events: none; }
+
+/* "What matters to you?" */
+.listen { display: grid; gap: .6rem; margin-top: 2rem; max-width: 30rem; }
+html:not(.js) .listen { display: none; }
+.listen label { color: var(--accent); }
+.listen__row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.listen__input {
+  flex: 1 1 12rem; min-width: 0; min-height: 48px; padding: .75rem 1.2rem;
+  border: 1px solid var(--line); border-radius: 999px; background: transparent;
+  font: inherit; color: var(--fg);
+}
+.listen__input::placeholder { color: var(--muted); }
+.listen__input:focus { outline: none; border-color: var(--fg); }
+.listen__note { color: var(--muted); font-size: .8rem; }
+.leaves { display: flex; flex-wrap: wrap; gap: .5rem; min-height: 2.5rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+.leaf {
+  padding: .35rem .95rem; border-radius: 999px 999px 999px 4px;
+  background: var(--lime); color: var(--green); font-weight: 500; font-size: .95rem;
+  animation: sprout .8s var(--ease-out) both;
+}
+@keyframes sprout { from { opacity: 0; transform: translateY(12px) scale(.6) rotate(-8deg); } to { opacity: 1; transform: none; } }
 
 .change__media { position: relative; }
 .change__figure { margin: 0 0 2rem; }
@@ -531,6 +556,18 @@ html:not(.js) .ask__choices, html:not(.js) .ask__message { display: none; }
 .footer__label { margin: 0 0 .75rem; color: var(--accent); }
 .footer__list { margin: 0; padding: 0; list-style: none; color: var(--muted); }
 .footer__list li + li { margin-top: .35rem; }
+.footer__list code { font-family: var(--mono); font-size: .85em; }
+
+.sources { margin-top: 2.5rem; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.sources summary { padding: 1.1rem 0; cursor: pointer; font-weight: 500; font-size: var(--step-1); list-style-position: inside; }
+.sources summary .mono { color: var(--accent); margin-right: .5rem; }
+.sources__body { padding-bottom: 2rem; }
+.sources__body h3 { margin: 1.75rem 0 .75rem; }
+.sources__table { overflow-x: auto; }
+.sources table { width: 100%; min-width: 640px; border-collapse: collapse; font-size: .85rem; }
+.sources th, .sources td { padding: .55rem .75rem .55rem 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.sources th { font-family: var(--mono); font-size: .7rem; font-weight: 400; text-transform: uppercase; color: var(--muted); }
+.sources .workflow { padding-left: 1.25rem; list-style: decimal; }
 
 /* =========================================================================
    Reduced motion: everything visible, nothing travels
@@ -550,3 +587,32 @@ html:not(.js) .ask__choices, html:not(.js) .ask__message { display: none; }
 /* =========================================================================
    Jack — MANI overlay styles (world.js) below this line
    ========================================================================= */
+.walk { position: fixed; inset: 0; z-index: 140; background: #000; opacity: 0; transition: opacity .6s var(--ease); }
+.walk.is-open { opacity: 1; }
+.walk__frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #000; }
+.walk__cover {
+  position: absolute; inset: 0; overflow: hidden;
+  display: grid; place-items: center; align-content: center; gap: 1.25rem;
+  background: var(--ink); color: var(--cream);
+  transition: opacity .9s var(--ease);
+}
+.walk__cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1); transition: transform 2.4s var(--ease-out); }
+.walk.is-open .walk__cover img { transform: scale(1.18); }
+.walk__cover.is-gone { opacity: 0; pointer-events: none; }
+.walk__entering { position: relative; margin: 0; font-size: var(--step-3); font-weight: 500; letter-spacing: -.04em; text-shadow: 0 2px 30px rgba(0, 0, 0, .6); }
+.walk__newtab { position: relative; color: var(--cream); }
+.walk__hint {
+  position: absolute; left: 50%; bottom: 96px; transform: translateX(-50%); margin: 0;
+  padding: .6rem 1.1rem; border-radius: 999px; background: rgba(14, 39, 33, .8); color: var(--cream);
+  font-size: .9rem; white-space: nowrap; pointer-events: none; transition: opacity .8s;
+}
+.walk__hint.is-off { opacity: 0; }
+.walk__ui { position: absolute; right: var(--gutter); bottom: 24px; z-index: 2; display: flex; align-items: center; gap: 1.25rem; }
+.walk__skip { background: none; border: 0; padding: 0; color: var(--cream); font: inherit; font-size: .95rem; cursor: pointer; }
+html.in-walk { overflow: hidden; }
+html.in-walk .cursor, html.in-walk .site-header { display: none; }
+html.has-cursor.in-walk .walk * { cursor: auto !important; }
+@media (max-width: 600px) {
+  .walk__hint { white-space: normal; width: 86%; text-align: center; }
+  .walk__ui { left: var(--gutter); justify-content: space-between; }
+}

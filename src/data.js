@@ -44,6 +44,14 @@ window.AppData = {
   change: {
     label: "How change happens",
     next: "Next step →",
+    back: "← Back",
+    // "What matters to you?" — visitor plants a word on the root line. Nothing is stored.
+    listen: {
+      label: "What matters to you?",
+      placeholder: "One word, e.g. belonging",
+      button: "Plant it",
+      note: "Stays on your screen only. Nothing is saved or sent."
+    },
     last: "See the impact ↓",
     // brief p.2
     steps: [
@@ -106,6 +114,34 @@ window.AppData = {
     ai: "Built with AI assistance — see the workflow doc.",
     mani: "The 3D garden is an imagined space generated with MANI Engine."
   },
+
+  // MANI walk overlay (world.js). Set embed to false if the world won't load in an iframe (J4).
+  walk: {
+    embed: true,
+    entering: "Entering…",
+    newTab: "Open the walk in a new tab",
+    hint: "Click to start, then use arrow keys or WASD to walk.",
+    portal: "Step through the portal",
+    skip: "Skip the walk"
+  },
+
+  // Fact-check table in the footer's "Sources, AI use & workflow" panel.
+  // TODO team: put your names in "by" once you've checked each row against the source.
+  facts: [
+    { claim: "People engaged", page: "1,729 people engaged with activities, resources and events", source: "IRPH Impact Report 2024–25 (quoted in the Creator Lab brief, slide 3)", pp: "3 and 10", by: "To confirm" },
+    { claim: "Network members", page: "789 network members", source: "IRPH Impact Report 2024–25 (quoted in the Creator Lab brief, slide 3)", pp: "3 and 10", by: "To confirm" },
+    { claim: "Countries", page: "50+ countries represented", source: "IRPH Impact Report 2024–25 (quoted in the Creator Lab brief, slide 3)", pp: "3 and 10", by: "To confirm" },
+    { claim: "Participant quote", page: "EcoGPX® “dark spot” quote", source: "Creator Lab brief, slide 3", pp: "3", by: "To confirm" },
+    { claim: "Mission statement", page: "“Loneliness, inequality and disconnection…”", source: "Creator Lab brief, slide 2", pp: "2", by: "To confirm" },
+    { claim: "Charity number", page: "Registered Charity No. 1179885", source: "Creator Lab brief, slide 5", pp: "5", by: "To confirm" }
+  ],
+
+  // TODO team: add any other AI tools you used (e.g. ChatGPT / Codex).
+  aiUse: [
+    "MANI Engine — generated the imagined 3D garden walk from a written prompt (prompt in README).",
+    "Claude (Claude Code) — drafted HTML, CSS and JavaScript; the team reviewed and tested it. Every prompt is logged in PROMPT_LOG.md.",
+    "No AI-generated people, photos, quotes or statistics. All facts come from the IRPH brief and impact report."
+  ],
 
   links: {
     // Published MANI world URL (Jack, J5). Used by the walk button when JS is off.

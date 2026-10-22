@@ -151,9 +151,9 @@ Durations are estimates. Do tasks in order within each column. ⚑ = blocks the 
 | J3 ⚑ | `data.js` / `AppData`: all copy, quote, stats (value, label, source, page), credits, programmes, donation URL — copied from the brief | 25 m | Every field checked against the PDF (hero block done) |
 | J4 | **Clean-embed test** + confirm portal opens same tab or new tab | 10 m | §1 table updated with the answer |
 | J5 | MANI finish: point portal at `PAGES_URL/#returned`, set spawn point facing the path, try to remove waiting animation, take spawn screenshot (hand to ZJ for the fog hero) | 40 m | Walk → portal lands on our page; screenshot in `/assets` |
-| J6 | Transition + overlay (`world.js`): background preload, zoom-and-fade, "Entering…" min 2 s, 10 s timeout fallback, controls hint, portal ring, "Skip the walk", new-tab path if no clean embed | 40 m | Both embed outcomes tested |
-| J7 | `#returned` handling: skip fog, play real-photo moment; iframe-to-parent close; `visibilitychange` backup | 25 m | Portal return works end to end |
-| J8 | `build.py` + final single-file check (opens from a USB stick, MANI skipped); deploy the same build to Pages | 20 m | `dist/index.html` works alone |
+| J6 | Transition + overlay (`world.js`): background preload, zoom-and-fade, "Entering…" min 2 s, 10 s timeout fallback, controls hint, portal ring, "Skip the walk", new-tab path if no clean embed | 40 m | Both embed outcomes tested — **drafted (ZJ's branch, merged); needs the real MANI URL + J4 result** |
+| J7 | `#returned` handling: skip fog, play real-photo moment; iframe-to-parent close; `visibilitychange` backup | 25 m | Portal return works end to end — **drafted (ZJ's branch, merged); needs the real MANI URL + J4 result** |
+| J8 | `build.py` + final single-file check (opens from a USB stick, MANI skipped); deploy the same build to Pages | 20 m | `dist/index.html` works alone — **drafted (ZJ's branch, merged); needs the real MANI URL + J4 result** |
 | J9 | Test pass: phone, demo laptop, keyboard only, reduced motion, JS off, venue Wi-Fi | 25 m | Bug list posted; fixes assigned |
 | J10 | README sections: architecture, MANI workflow + prompts, embed/portal decisions, sources and fact-check table | 25 m | Sections written from the prompt log |
 

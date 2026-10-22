@@ -51,6 +51,7 @@
     var root = change.querySelector(".root");
     var current = change.querySelector(".change__current");
     var next = change.querySelector(".change__next");
+    var prevBtn = change.querySelector(".change__prev");
     var copy = (window.AppData && window.AppData.change) || {};
     var count = panels.length, step = 0, clearTimer = null;
 
@@ -75,9 +76,42 @@
       root.style.setProperty("--p", count > 1 ? n / (count - 1) : 1);
       current.textContent = String(n + 1).padStart(2, "0");
       setLabel(next, n === count - 1 ? (copy.last || "See the impact ↓") : (copy.next || "Next step →"));
+      prevBtn.disabled = n === 0;
     };
 
-    tabs.forEach(function (t, i) { t.addEventListener("click", function () { setStep(i); }); });
+    tabs.forEach(function (t, i) {
+      t.addEventListener("click", function () { setStep(i); });
+      // Left/right arrows move between steps (from ZJ's draft).
+      t.addEventListener("keydown", function (e) {
+        var to = e.key === "ArrowRight" ? step + 1 : e.key === "ArrowLeft" ? step - 1 : -1;
+        if (to < 0 || to >= count) return;
+        e.preventDefault();
+        setStep(to);
+        tabs[to].focus();
+      });
+    });
+    prevBtn.addEventListener("click", function () { if (step > 0) setStep(step - 1); });
+
+    // "What matters to you?": the word becomes a leaf on the root line (from ZJ's draft).
+    // textContent only, so nothing typed is ever treated as HTML; nothing is stored or sent.
+    var listen = change.querySelector(".listen");
+    var leaves = change.querySelector(".leaves");
+    var input = listen && listen.querySelector(".listen__input");
+    if (listen && leaves && input) {
+      if (copy.listen && copy.listen.placeholder) input.placeholder = copy.listen.placeholder;
+      listen.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var word = input.value.trim().slice(0, 24);
+        if (!word) return;
+        var leaf = document.createElement("li");
+        leaf.className = "leaf";
+        leaf.textContent = word;
+        leaves.appendChild(leaf);
+        if (leaves.children.length > 12) leaves.removeChild(leaves.firstChild);
+        input.value = "";
+        input.focus();
+      });
+    }
     next.addEventListener("click", function () {
       if (step < count - 1) { setStep(step + 1); return; }
       var target = document.getElementById("evidence");
@@ -137,6 +171,29 @@
         message.classList.add("is-new");
         ask.classList.add("has-choice");
       });
+    });
+  }
+
+  // ---- Footer: fact-check table and AI-use list (from ZJ's draft) ---------------------
+
+  var factBody = document.querySelector(".sources .facts");
+  if (factBody && window.AppData && window.AppData.facts) {
+    window.AppData.facts.forEach(function (f) {
+      var tr = document.createElement("tr");
+      [f.claim, f.page, f.source, f.pp, f.by].forEach(function (cell) {
+        var td = document.createElement("td");
+        td.textContent = cell;
+        tr.appendChild(td);
+      });
+      factBody.appendChild(tr);
+    });
+  }
+  var aiList = document.querySelector(".sources .ai-use");
+  if (aiList && window.AppData && window.AppData.aiUse) {
+    window.AppData.aiUse.forEach(function (line) {
+      var li = document.createElement("li");
+      li.textContent = line;
+      aiList.appendChild(li);
     });
   }
 

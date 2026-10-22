@@ -4,6 +4,14 @@ Track 2 (Interactive Web Page), CapCut × EAST2046 Cambridge Creator Lab, for In
 
 See `PLAN.md` for the plan and task split. Workflow write-up to follow (J10, Z6).
 
+## Build the file to submit
+
+`python3 build.py` writes `dist/index.html` (about 1.2 MB) with all CSS, JS and images inlined. It opens straight from disk with no server.
+
+## Connect the MANI walk
+
+In `src/data.js`, set `links.maniWorld` to the published MANI world URL. If the world won't load inside our page (J4 test), also set `walk.embed` to `false` so the walk opens in a new tab instead.
+
 ## Run locally
 
 Open `index.html` in a browser, or serve the folder (`python3 -m http.server`) and open http://localhost:8000.
@@ -15,11 +23,11 @@ Open `index.html` in a browser, or serve the folder (`python3 -m http.server`) a
 | `src/data.js` | `AppData`: every word, number, credit and link | Jack |
 | `src/styles.css` | All styles (Jack's overlay block at the end) | ZJ |
 | `src/hero.js` | Fog hero | ZJ |
-| `src/world.js` | MANI overlay, portal, `#returned` | Jack |
+| `src/world.js` | MANI overlay, portal, `#returned` (adapted from ZJ's draft) | Jack |
 | `src/sections.js` | Fills copy from `AppData`; tap-through, counters, the ask | ZJ |
 | `src/orbs.js` | Connection field: 50 orbs (one per country), cursor pushes, grab and throw, links re-form | ZJ |
 | `src/motion.js` | Preloader, smooth scroll, cursor, text/image reveals, magnetic buttons, theme switching, marquee | ZJ |
-| `build.py` | Inlines everything into `dist/index.html` | Jack |
+| `build.py` | Inlines everything into `dist/index.html` (from ZJ's draft) | Jack |
 
 Section IDs: `#hero`, `#walk`, `#real`, `#change`, `#evidence`, `#programmes`, `#ask`.
 

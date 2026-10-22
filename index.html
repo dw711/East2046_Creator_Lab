@@ -5,7 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Clear the Dark — Intercultural Roots</title>
   <meta name="description" content="Clear the dark spot, walk into the garden, and meet the people of Intercultural Roots for Public Health.">
-  <script>document.documentElement.classList.add("js");</script>
+  <script>
+    document.documentElement.classList.add("js");
+    // Loaded inside our own walk overlay by the MANI portal: tell the parent page and stop.
+    if (window.self !== window.top && location.hash === "#returned") {
+      try { window.parent.postMessage({ type: "irph:returned" }, "*"); } catch (e) {}
+      document.documentElement.style.visibility = "hidden";
+      try { window.stop(); } catch (e) {}
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
@@ -65,7 +73,19 @@
     </section>
 
     <!-- 2. MANI walk overlay (Jack, world.js) -->
-    <section id="walk" class="walk" hidden></section>
+    <section id="walk" class="walk" hidden aria-label="Imagined garden walk">
+      <iframe id="worldFrame" class="walk__frame" title="Imagined garden walk, made with MANI Engine" allow="fullscreen; autoplay; xr-spatial-tracking; gamepad"></iframe>
+      <div class="walk__cover">
+        <img src="assets/spawn-placeholder.svg" alt="">
+        <p class="walk__entering" data-copy="walk.entering">Entering…</p>
+        <a class="walk__newtab link-line" href="#" target="_blank" rel="noopener" hidden data-copy="walk.newTab">Open the walk in a new tab</a>
+      </div>
+      <p class="walk__hint is-off" data-copy="walk.hint">Click to start, then use arrow keys or WASD to walk.</p>
+      <div class="walk__ui">
+        <button type="button" class="btn btn--ghost walk__portal magnetic"><span class="btn__roll" data-label="Step through the portal"><span data-copy="walk.portal">Step through the portal</span></span></button>
+        <button type="button" class="walk__skip link-line" data-copy="walk.skip">Skip the walk</button>
+      </div>
+    </section>
 
     <!-- 3. Portal → real people -->
     <section id="real" class="section real" data-theme="dark" tabindex="-1" aria-labelledby="real-title">
@@ -104,6 +124,14 @@
               <article class="change__panel is-active" data-step="0">
                 <h3 class="change__title"><span class="mono change__num">01</span><span data-copy="change.steps.0.title">Listen</span></h3>
                 <p class="change__text" data-copy="change.steps.0.text">Start with “What Matters to You?”</p>
+                <form class="listen" autocomplete="off">
+                  <label class="mono" for="listen-word" data-copy="change.listen.label">What matters to you?</label>
+                  <div class="listen__row">
+                    <input id="listen-word" class="listen__input" type="text" maxlength="24" placeholder="One word, e.g. belonging" data-cursor="Type">
+                    <button type="submit" class="btn btn--dark magnetic"><span class="btn__roll" data-label="Plant it"><span data-copy="change.listen.button">Plant it</span></span></button>
+                  </div>
+                  <small class="listen__note" data-copy="change.listen.note">Stays on your screen only. Nothing is saved or sent.</small>
+                </form>
               </article>
               <article class="change__panel" data-step="1">
                 <h3 class="change__title"><span class="mono change__num">02</span><span data-copy="change.steps.1.title">Create Together</span></h3>
@@ -115,7 +143,10 @@
               </article>
             </div>
 
-            <button type="button" class="btn btn--dark change__next magnetic"><span class="btn__roll" data-label="Next step →"><span>Next step →</span></span></button>
+            <div class="change__nav">
+              <button type="button" class="btn btn--line change__prev magnetic" disabled><span class="btn__roll" data-label="← Back"><span data-copy="change.back">← Back</span></span></button>
+              <button type="button" class="btn btn--dark change__next magnetic"><span class="btn__roll" data-label="Next step →"><span>Next step →</span></span></button>
+            </div>
           </div>
 
           <div class="change__media">
@@ -124,11 +155,11 @@
               <figcaption class="mono credit" data-copy="change.steps.0.credit">Bridging Cultures, Coventry, 2025. Image: Intercultural Roots.</figcaption>
             </figure>
             <figure class="change__figure" data-step="1">
-              <div class="media__clip"><img src="assets/forum-theatre-2024.jpg" alt="A man in a blue scarf raises his arms in a forum theatre session, with a group moving behind him." data-src="change.steps.1.image" data-alt="change.steps.1.alt" loading="lazy"></div>
+              <div class="media__clip"><img src="assets/forum-theatre-2024.jpg" alt="A man in a blue scarf raises his arms in a forum theatre session, with a group moving behind him." data-src="change.steps.1.image" data-alt="change.steps.1.alt" decoding="async"></div>
               <figcaption class="mono credit" data-copy="change.steps.1.credit">Boal Forum Theatre, 2024. Image: Intercultural Roots.</figcaption>
             </figure>
             <figure class="change__figure" data-step="2">
-              <div class="media__clip"><img src="assets/ecogpx-coventry-hearts-2024.jpg" alt="Three people smile in a sunny garden, holding up heart shapes woven from willow." data-src="change.steps.2.image" data-alt="change.steps.2.alt" loading="lazy"></div>
+              <div class="media__clip"><img src="assets/ecogpx-coventry-hearts-2024.jpg" alt="Three people smile in a sunny garden, holding up heart shapes woven from willow." data-src="change.steps.2.image" data-alt="change.steps.2.alt" decoding="async"></div>
               <figcaption class="mono credit" data-copy="change.steps.2.credit">EcoGPX Coventry, 2024. Photo: Kopal Gupta.</figcaption>
             </figure>
           </div>
@@ -143,6 +174,7 @@
           <span class="root__node" style="left:50%"></span>
           <span class="root__node" style="left:100%"></span>
         </div>
+        <ul class="leaves" aria-label="Words planted on this screen"></ul>
       </div>
     </section>
 
@@ -270,6 +302,28 @@
           </ul>
         </div>
       </div>
+
+      <details class="sources">
+        <summary><span class="mono">(006)</span> Sources, AI use &amp; workflow</summary>
+        <div class="sources__body">
+          <h3 class="mono footer__label">Fact-check table</h3>
+          <div class="sources__table"><table>
+            <thead><tr><th>Claim</th><th>Wording on page</th><th>Source</th><th>Page</th><th>Checked by</th></tr></thead>
+            <tbody class="facts"></tbody>
+          </table></div>
+          <h3 class="mono footer__label">AI use</h3>
+          <ul class="footer__list ai-use"></ul>
+          <h3 class="mono footer__label">Reusable workflow</h3>
+          <ol class="footer__list workflow">
+            <li>Read the brief; list the claims and the three questions to answer.</li>
+            <li>Put every word, number, link and credit in <code>src/data.js</code>.</li>
+            <li>Fact-check each claim against its source (table above).</li>
+            <li>Generate the 3D world with MANI from a written prompt; test the embed.</li>
+            <li>Build, then test: phone, keyboard, reduced motion, 3D skipped.</li>
+            <li>Run <code>build.py</code> to produce one self-contained file.</li>
+          </ol>
+        </div>
+      </details>
     </div>
   </footer>
 
