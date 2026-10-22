@@ -319,6 +319,9 @@
   .stat .mono { display: flex; justify-content: space-between; opacity: .6; }
   .stat__num { display: block; margin: 28px 0 14px; font: 400 clamp(84px, 11vw, 180px)/.8 var(--serif); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
   .stat__label { max-width: 260px; }
+  /* Progress bar under each number: fills in step with the count-up */
+  .stat__bar { display: block; height: 3px; margin: 0 0 16px; border-radius: 2px; background: var(--line); overflow: hidden; }
+  .stat__bar > span { display: block; height: 100%; border-radius: inherit; background: var(--green); transform-origin: left; }
   @media (max-width: 720px) { .stat { grid-column: 1 / -1; } }
   .source { margin-top: 40px; opacity: .55; }
 
@@ -653,9 +656,9 @@
       <span class="line"><span style="--i:1"><i>Real connection.</i></span></span>
     </h2>
     <div class="stats grid">
-      <div class="stat fade" style="--i:0"><span class="mono"><span>(001)</span><span>Engaged</span></span><span class="stat__num" data-count="1729">1,729</span><p class="stat__label">people engaged with activities, resources and events</p></div>
-      <div class="stat fade" style="--i:1"><span class="mono"><span>(002)</span><span>Network</span></span><span class="stat__num" data-count="789">789</span><p class="stat__label">network members</p></div>
-      <div class="stat fade" style="--i:2"><span class="mono"><span>(003)</span><span>Reach</span></span><span class="stat__num" data-count="50" data-suffix="+">50+</span><p class="stat__label">countries represented</p></div>
+      <div class="stat fade" style="--i:0"><span class="mono"><span>(001)</span><span>Engaged</span></span><span class="stat__num" data-count="1729">1,729</span><span class="stat__bar" aria-hidden="true"><span></span></span><p class="stat__label">people engaged with activities, resources and events</p></div>
+      <div class="stat fade" style="--i:1"><span class="mono"><span>(002)</span><span>Network</span></span><span class="stat__num" data-count="789">789</span><span class="stat__bar" aria-hidden="true"><span></span></span><p class="stat__label">network members</p></div>
+      <div class="stat fade" style="--i:2"><span class="mono"><span>(003)</span><span>Reach</span></span><span class="stat__num" data-count="50" data-suffix="+">50+</span><span class="stat__bar" aria-hidden="true"><span></span></span><p class="stat__label">countries represented</p></div>
     </div>
 
     <!-- Connection field: one orb per country represented. Pushed apart by the cursor, they drift back and reconnect. -->
@@ -1092,9 +1095,11 @@
       if (reduced || el.dataset.counted) return;
       el.dataset.counted = '1';
       const to = +el.dataset.count, suffix = el.dataset.suffix || '', t0 = performance.now(), dur = 1600;
+      const bar = el.parentElement.querySelector('.stat__bar > span');
       (function step(t) {
         const k = Math.min(1, (t - t0) / dur), v = Math.round(to * (1 - Math.pow(1 - k, 4)));
         el.textContent = v.toLocaleString('en-GB') + suffix;
+        if (bar) bar.style.transform = `scaleX(${v / to})`; // bar fills in step with the number
         if (k < 1) requestAnimationFrame(step);
       })(t0);
     }
