@@ -16,7 +16,7 @@
 
 | Item | Status |
 |---|---|
-| Fog hook | Agreed |
+| Fog hook | Agreed — **built (Z1)** |
 | MANI walk straight after the hook | Agreed |
 | In-world portal opens our link after the walk | **Works** ✅ |
 | MANI loading/waiting animation before the world appears | Annoying — Jack trying to remove |
@@ -26,14 +26,17 @@
 
 ### The open question: is it a clean embed?
 Test: put the published MANI world URL in a bare `<iframe>` in a test HTML file and open it. (Owner: Jack, task J4)
+Faster first check: `curl -sI <MANI_URL> | grep -i -E 'x-frame-options|content-security-policy'`.
 
 - **Clean embed (world loads in the iframe):** world runs in our overlay. The portal loads
-  `OUR_URL/#returned` inside the iframe; our page detects it is inside an iframe on the same
-  site and tells the parent page to close the overlay and play the real-photo moment.
+  `OUR_URL/#returned` inside the iframe; our page detects it is inside an iframe and tells the
+  parent with `parent.postMessage({irph: 'returned'}, '*')` (not direct same-origin access —
+  the submitted file may be opened from `file://`, a different origin from Pages).
 - **Not a clean embed (blank / refused):** "Walk out of the dark spot" opens the world in a
-  new tab. The portal opens `OUR_URL/#returned`. As a backup, the original tab listens for
-  `visibilitychange` and plays the real-photo moment when the visitor switches back.
+  new tab. The portal opens `OUR_URL/#returned`. Backup: `BroadcastChannel('irph')` from the
+  returned tab, then `visibilitychange` — armed only after the walk tab was opened.
 - **Either way:** a "Skip the walk" link and our own "Step through the portal" button always work.
+- The portal always lands on the **Pages** copy, so deploy the final build to Pages before submitting.
 
 ---
 
@@ -57,6 +60,7 @@ Test: put the published MANI world URL in a bare `<iframe>` in a test HTML file 
    - Show "Entering…" for at least ~2 s; if not ready after ~10 s, offer "Open the walk in a new tab".
    - Our "Step through the portal" ring is visible in a corner throughout.
    - Walk ends at the in-world portal → `OUR_URL/#returned`.
+   - Touch devices: if MANI has no touch controls, make "Skip the walk" the primary action.
 
 3. **Portal → real people** (answers *Why do we exist?*)
    - Fades up on the real EcoGPX Coventry group photo (2024).
@@ -91,7 +95,7 @@ Test: put the published MANI world URL in a bare `<iframe>` in a test HTML file 
    - Full-viewport green panel, no scroll-jacking.
 
 8. **Footer** — photo credits, sources, "Built with AI assistance — see workflow doc",
-   "The 3D garden is an imagined space generated with MANI Engine."
+   "The 3D garden is an imagined space generated with MANI Engine.", Registered Charity No. 1179885.
 
 ### Photo credits (from the brief — use exactly, next to each image)
 - Boal Forum Theatre, 2024. Image: Intercultural Roots.
@@ -100,6 +104,7 @@ Test: put the published MANI world URL in a bare `<iframe>` in a test HTML file 
 - Bridging Cultures, Coventry, 2025. Image: Intercultural Roots.
 
 If photo permission is refused: section 3 becomes typography only, with the same line.
+The EcoGPX group photo includes children — ask about this explicitly (J2) and record the answer.
 
 ---
 
@@ -108,10 +113,12 @@ If photo permission is refused: section 3 becomes typography only, with the same
 - **Build** in separate files (to avoid merge conflicts); **submit** one self-contained
   `index.html` produced by `build.py` (inlines CSS, JS, images as base64).
 - All copy, stats, credits, URLs in `data.js` → `AppData`, commented for non-coders.
+  Text is also present in the HTML (`data-copy="path"` attributes), so the page reads fine
+  without JS; `sections.js` (or `build.py` at build time) fills it from `AppData`.
 - Animate only `transform` and `opacity`. Respect `prefers-reduced-motion`.
 - All text is real HTML (never baked into canvas or images).
-- Palette: `#1A1C1A`, `#F4F7F5`, brand green `#2E5A44`, accent `#E07A5F`. If IRPH sends
-  branding, swap in their exact greens and cream (the brief uses a deep green and cream).
+- Palette (sampled from the brief PDF): green `#163D32`, cream `#F5F1E7`, lime `#D4E781`,
+  terracotta `#A66B50`, ink `#1A1C1A`.
 - Works on a 375 px phone, the demo laptop, by keyboard, and with the MANI walk skipped.
 
 ### Repo layout
@@ -139,14 +146,14 @@ Durations are estimates. Do tasks in order within each column. ⚑ = blocks the 
 
 | # | Task | Est. | Done when |
 |---|---|---|---|
-| J1 ⚑ | Create GitHub repo, invite ZJ (`zhanjunyuen`), push skeleton (layout above), turn on GitHub Pages | 15 m | ZJ can clone; Pages URL loads |
+| J1 ⚑ | Create GitHub repo, invite ZJ (`zhanjunyuen`), push skeleton (layout above), turn on GitHub Pages | 15 m | ZJ can clone; Pages URL loads — **skeleton pushed with Z1; invite + Pages still to do** |
 | J2 ⚑ | Ask organisers about photo permissions; get the four images; compress (<300 KB each) | 20 m | Images in `/assets` or "no" recorded |
-| J3 ⚑ | `data.js` / `AppData`: all copy, quote, stats (value, label, source, page), credits, programmes, donation URL — copied from the brief | 25 m | Every field checked against the PDF |
+| J3 ⚑ | `data.js` / `AppData`: all copy, quote, stats (value, label, source, page), credits, programmes, donation URL — copied from the brief | 25 m | Every field checked against the PDF (hero block done) |
 | J4 | **Clean-embed test** + confirm portal opens same tab or new tab | 10 m | §1 table updated with the answer |
 | J5 | MANI finish: point portal at `PAGES_URL/#returned`, set spawn point facing the path, try to remove waiting animation, take spawn screenshot (hand to ZJ for the fog hero) | 40 m | Walk → portal lands on our page; screenshot in `/assets` |
-| J6 | Transition + overlay (`world.js`): background preload, zoom-and-fade, "Entering…" min 2 s, 10 s timeout fallback, controls hint, portal ring, "Skip the walk", new-tab path if no clean embed | 40 m | Both embed outcomes tested |
-| J7 | `#returned` handling: skip fog, play real-photo moment; iframe-to-parent close; `visibilitychange` backup | 25 m | Portal return works end to end |
-| J8 | `build.py` + final single-file check (opens from a USB stick, MANI skipped) | 20 m | `dist/index.html` works alone |
+| J6 | Transition + overlay (`world.js`): background preload, zoom-and-fade, "Entering…" min 2 s, 10 s timeout fallback, controls hint, portal ring, "Skip the walk", new-tab path if no clean embed | 40 m | Both embed outcomes tested — **drafted (ZJ's branch, merged); needs the real MANI URL + J4 result** |
+| J7 | `#returned` handling: skip fog, play real-photo moment; iframe-to-parent close; `visibilitychange` backup | 25 m | Portal return works end to end — **drafted (ZJ's branch, merged); needs the real MANI URL + J4 result** |
+| J8 | `build.py` + final single-file check (opens from a USB stick, MANI skipped); deploy the same build to Pages | 20 m | `dist/index.html` works alone — **drafted (ZJ's branch, merged); needs the real MANI URL + J4 result** |
 | J9 | Test pass: phone, demo laptop, keyboard only, reduced motion, JS off, venue Wi-Fi | 25 m | Bug list posted; fixes assigned |
 | J10 | README sections: architecture, MANI workflow + prompts, embed/portal decisions, sources and fact-check table | 25 m | Sections written from the prompt log |
 
@@ -154,17 +161,18 @@ Durations are estimates. Do tasks in order within each column. ⚑ = blocks the 
 
 | # | Task | Est. | Done when |
 |---|---|---|---|
-| Z1 | Fog hero (`hero.js`): DPR canvas, noise, soft brush scaled to viewport, %-cleared at 45%, "Clear it for me", touch handling, quote reveal, "Walk out of the dark spot" + "Skip the walk" buttons (Jack wires what they open). Use a placeholder image until Jack's spawn screenshot arrives | 70 m | Works on laptop and a real phone |
-| Z2 | Page skeleton + `styles.css`: palette, fluid type, section layouts, footer with credits, all rendered from `AppData` | 40 m | All sections render from `AppData` |
-| Z3 | Section 3 real-photo moment (layout and copy; Jack wires the `#returned` trigger) + Section 4 tap-through story with growing root line | 45 m | Tap through all three steps on phone and keyboard |
-| Z4 | Section 5 counters + Section 6 programmes | 30 m | Counters show final values with reduced motion |
-| Z5 | Section 7 the ask: programme selection, message update, donation end-card | 25 m | Button opens the correct URL |
+| Z1 | Fog hero (`hero.js`) | 70 m | **Done** — placeholder image until Jack's spawn screenshot arrives |
+| Z2 | Page skeleton + `styles.css` + `motion.js` | 40 m | **Done** |
+| Z3 | Section 3 real-photo moment (layout and copy; Jack wires the `#returned` trigger) + Section 4 tap-through story with growing root line | 45 m | **Done** |
+| Z4 | Section 5 counters + Section 6 programmes | 30 m | **Done** |
+| Z5 | Section 7 the ask: programme selection, message update, donation end-card | 25 m | **Done** |
 | Z6 | README sections: how IRPH updates the page, how to make the next campaign page, AI use, credits | 25 m | Sections written from the prompt log |
 
 ### Hand-offs
 - Jack → ZJ: repo access (J1), `AppData` (J3), spawn screenshot (J5).
-- ZJ → Jack: hero button hooks (`onWalk()`, `onSkip()`) exposed from `hero.js` so `world.js` can attach to them.
-- Agree now: section IDs (`#hero`, `#walk`, `#real`, `#change`, `#evidence`, `#programmes`, `#ask`) so both files target the same elements.
+- ZJ → Jack: hero hooks exposed from `hero.js` as `window.Hero` — `onWalk(fn)`, `onSkip(fn)`,
+  `onCleared(fn)`, `dismiss()`, `reset()`, `img`. See the comment at the top of `hero.js`.
+- Section IDs: `#hero`, `#walk`, `#real`, `#change`, `#evidence`, `#programmes`, `#ask`.
 
 ### Shared
 - Log every AI prompt in `PROMPT_LOG.md` as you go (one line on what you kept or fixed).
