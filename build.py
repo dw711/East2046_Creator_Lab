@@ -1,36 +1,46 @@
 #!/usr/bin/env python3
-"""Inline CSS, JS and local images into dist/index.html (one self-contained file).
-Usage: python3 build.py
-Images referenced as assets/<file> (or ../assets/<file> in CSS) are base64-inlined
-if the file exists; missing files are left as-is (the page has graceful fallbacks).
+"""Inline local assets into one self-contained page (PLAN.md §3).
+
+    python3 build.py
+
+Writes:
+  dist/index.html       — the submission file: works on its own, e.g. from a USB stick
+  dist/mani-scene.html  — the same page for the MANI project at maniengine.com/t/T7lVd05wE151.
+                          MANI serves pages in a CSP sandbox without allow-popups, so links
+                          that open a new tab are switched to open in the same tab.
 """
-import base64, mimetypes, re
-from pathlib import Path
+import base64
+import mimetypes
+import pathlib
+import re
 
-root = Path(__file__).parent
-html = (root / "index.html").read_text(encoding="utf-8")
+ROOT = pathlib.Path(__file__).parent
+DIST = ROOT / "dist"
 
-def css(m):
-    return "<style>\n" + (root / m.group(1)).read_text(encoding="utf-8") + "\n</style>"
 
-def js(m):
-    code = (root / m.group(1)).read_text(encoding="utf-8").replace("</script", "<\\/script")
-    return "<script>\n" + code + "\n</script>"
+def inline_assets(html: str) -> str:
+    """Replace src="assets/..." with data: URLs."""
+    def to_data_url(match):
+        path = ROOT / match.group(2)
+        mime = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
+        data = base64.b64encode(path.read_bytes()).decode("ascii")
+        return f'{match.group(1)}="data:{mime};base64,{data}"'
+    return re.sub(r'(src|href)="(assets/[^"]+)"', to_data_url, html)
 
-html = re.sub(r'<link rel="stylesheet" href="([^"]+)">', css, html)
-html = re.sub(r'<script src="([^"]+)"></script>', js, html)
 
-def asset(m):
-    prefix, rel = m.group(1), m.group(2)
-    f = root / rel.replace("../", "")
-    if not f.exists():
-        return m.group(0)
-    mime = mimetypes.guess_type(f.name)[0] or "application/octet-stream"
-    return prefix + "data:%s;base64,%s" % (mime, base64.b64encode(f.read_bytes()).decode())
+def for_mani(html: str) -> str:
+    """Popups are blocked inside MANI's sandbox, so open external links in the same tab."""
+    return html.replace(' target="_blank" rel="noopener"', "")
 
-html = re.sub(r"""(['"(])((?:\.\./)?assets/[A-Za-z0-9_.-]+)""", asset, html)
 
-out = root / "dist"
-out.mkdir(exist_ok=True)
-(out / "index.html").write_text(html, encoding="utf-8")
-print("Wrote %s (%.0f KB)" % (out / "index.html", len(html.encode()) / 1024))
+def main():
+    html = inline_assets((ROOT / "index.html").read_text(encoding="utf-8"))
+    DIST.mkdir(exist_ok=True)
+    (DIST / "index.html").write_text(html, encoding="utf-8")
+    (DIST / "mani-scene.html").write_text(for_mani(html), encoding="utf-8")
+    for name in ("index.html", "mani-scene.html"):
+        print(f"dist/{name}: {(DIST / name).stat().st_size / 1024:.0f} KB")
+
+
+if __name__ == "__main__":
+    main()

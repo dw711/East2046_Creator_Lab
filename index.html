@@ -1,337 +1,943 @@
 <!doctype html>
-<html lang="en-GB">
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Clear the Dark — Intercultural Roots</title>
-  <meta name="description" content="Clear the dark spot, walk into the garden, and meet the people of Intercultural Roots for Public Health.">
-  <script>
-    document.documentElement.classList.add("js");
-    // Loaded inside our own walk overlay by the MANI portal: tell the parent page and stop.
-    if (window.self !== window.top && location.hash === "#returned") {
-      try { window.parent.postMessage({ type: "irph:returned" }, "*"); } catch (e) {}
-      document.documentElement.style.visibility = "hidden";
-      try { window.stop(); } catch (e) {}
-    }
-  </script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="src/styles.css">
-  <!-- Dev shell. build.py inlines everything below into dist/index.html for submission. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clear the Dark — Intercultural Roots</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Palette from PLAN.md §3. Type system: display serif (uppercase, tight, with italic
+     lowercase accents) · mono labels · sans body — laid out on a 12-column grid. */
+  :root {
+    --ink: #1A1C1A;
+    --paper: #F4F7F5;
+    --green: #2E5A44;
+    --accent: #E07A5F;
+    --line: #1a1c1a1f;
+    --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Courier New", monospace;
+    --sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --ease: cubic-bezier(.16, 1, .3, 1);
+    --gutter: 48px;
+  }
+  @media (max-width: 1024px) { :root { --gutter: 32px; } }
+  @media (max-width: 720px)  { :root { --gutter: 16px; } }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.5 var(--sans); -webkit-font-smoothing: antialiased; }
+  h1, h2, h3, p, figure, blockquote { margin: 0; }
+  a { color: inherit; }
+
+  /* ---------- Layout primitives ---------- */
+  .container { padding-left: var(--gutter); padding-right: var(--gutter); position: relative; width: 100%; }
+  .grid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 16px; }
+  @media (max-width: 720px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+
+  /* Mono label: the small uppercase voice used for every bit of metadata */
+  .mono { font: 500 12px/1.15 var(--mono); text-transform: uppercase; letter-spacing: .02em; }
+  .mono--justify { text-align: justify; max-width: 270px; }
+
+  /* Display: condensed-feeling serif, uppercase, tight leading; <i> switches to italic lowercase */
+  .display { font: 400 clamp(46px, 7.4vw, 112px)/.84 var(--serif); text-transform: uppercase; letter-spacing: -.01em; }
+  .display i { font-style: italic; text-transform: none; }
+  .display .glyph { font-size: .6em; vertical-align: .35em; margin-right: .2em; }
+
+  /* Pill eyebrow */
+  .pill { display: inline-flex; align-items: center; gap: 6px; width: fit-content; padding: 5px 9px; border-radius: 999px; background: var(--green); color: var(--paper); }
+  .pill--light { background: var(--paper); color: var(--green); }
+  .pill--outline { background: none; border: 1px solid currentColor; color: inherit; }
+
+  /* Rolling button: label duplicates and slides up on hover */
+  .roll { --bg: var(--ink); --fg: var(--paper);
+    display: inline-flex; align-items: center; gap: 12px; padding: 10px 10px 10px 18px; border: 0; border-radius: 999px;
+    background: var(--bg); color: var(--fg); font: 500 15px/1 var(--sans); text-decoration: none; cursor: pointer; transition: transform .5s var(--ease); }
+  .roll:active { transform: scale(.97); }
+  .roll__text { display: flex; flex-direction: column; gap: .15em; height: 1em; overflow: hidden; }
+  .roll__text > span { display: block; transition: transform .5s var(--ease); }
+  .roll:hover .roll__text > span, .roll:focus-visible .roll__text > span { transform: translateY(-115%); }
+  .roll__icon { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; background: var(--fg); color: var(--bg); font-size: 14px; overflow: hidden; }
+  .roll__icon > span { transition: transform .5s var(--ease); }
+  .roll:hover .roll__icon > span { transform: rotate(45deg); }
+  .roll--accent { --bg: var(--accent); --fg: var(--ink); }
+  .roll--paper  { --bg: var(--paper);  --fg: var(--green); }
+  .roll--sm { font-size: 13px; padding: 6px 6px 6px 14px; gap: 10px; }
+  .roll--sm .roll__icon { width: 22px; height: 22px; font-size: 12px; }
+
+  /* Line-mask reveal: <span class="line"><span>…</span></span>; parent gets .in */
+  .line { display: block; overflow: hidden; padding-bottom: .08em; margin-bottom: -.08em; }
+  .line > span { display: inline-block; transform: translateY(110%); transition: transform 1.2s var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
+  .in .line > span, .line.in > span { transform: none; }
+  .fade { opacity: 0; transform: translateY(16px); transition: opacity 1s var(--ease), transform 1s var(--ease); transition-delay: calc(var(--i, 0) * 90ms); }
+  .in .fade, .fade.in { opacity: 1; transform: none; }
+
+  /* Section shell */
+  .sec { padding: clamp(96px, 14vh, 160px) 0; position: relative; }
+  .sec--dark { background: var(--ink); color: var(--paper); --line: #f4f7f522; }
+  .sec__head { align-items: center; margin-bottom: clamp(32px, 6vh, 64px); }
+  .sec__head .pill { grid-column: 1 / span 4; }
+  .sec__head .idx { grid-column: span 2 / -1; justify-self: end; opacity: .5; }
+  .hr { height: 1px; background: var(--line); }
+
+  /* Optional design-grid overlay — press G */
+  .grid-overlay { position: fixed; inset: 0; z-index: 9999; pointer-events: none; display: none; }
+  .grid-overlay.on { display: grid; }
+  .grid-overlay > div { background: #e07a5f14; height: 100%; }
+  @media (max-width: 720px) { .grid-overlay > div:nth-child(n+5) { display: none; } }
+
+  /* =========================================================
+     1. Fog hero
+     Layers, back to front: .scene (spawn view) → #fog canvas → .grain → UI.
+     ========================================================= */
+  #hero { position: relative; height: 100vh; height: 100svh; min-height: 600px; overflow: hidden; background: var(--ink); color: var(--paper); }
+
+  /* Spawn view: assets/opening.jpg (opening.png cropped to drop the MANI HUD), revealed as the fog clears.
+     It settles at 1.03 (not 1) to crop the thin window border baked into the screenshot. */
+  #hero .scene { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 55%;
+    transform: scale(1.1); transition: transform 2.4s var(--ease); }
+  #hero.cleared .scene { transform: scale(1.03); }
+
+  #fog { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: none; opacity: 0; transition: opacity 1.6s var(--ease); }
+  #hero.ready #fog { opacity: 1; }
+  #hero.cleared #fog { opacity: 0; pointer-events: none; transition-duration: 1.8s; }
+
+  #hero .grain { position: absolute; inset: -50%; pointer-events: none; opacity: .09; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain 1s steps(6) infinite; }
+  @keyframes grain { 0%{transform:translate(0,0)} 20%{transform:translate(-4%,3%)} 40%{transform:translate(3%,-5%)} 60%{transform:translate(-6%,-2%)} 80%{transform:translate(5%,4%)} 100%{transform:translate(0,0)} }
+
+  /* Header on the grid */
+  #hero .nav { position: absolute; top: 0; left: 0; right: 0; z-index: 5; padding-top: 20px; align-items: center; pointer-events: none; }
+  #hero .nav > * { pointer-events: auto; }
+  #hero .brand { grid-column: 1 / span 3; font: 400 24px/1 var(--serif); text-decoration: none; }
+  #hero .links { grid-column: 6 / span 4; display: flex; gap: 20px; list-style: none; margin: 0; padding: 0; }
+  #hero .links a { text-decoration: none; opacity: .7; transition: opacity .3s; }
+  #hero .links a:hover { opacity: 1; }
+  #hero .links sup { opacity: .5; margin-right: 3px; font-size: 9px; }
+  #hero .nav .roll { grid-column: span 3 / -1; justify-self: end; }
+  @media (max-width: 720px) { #hero .links { display: none; } #hero .brand { grid-column: 1 / span 2; } #hero .nav .roll { grid-column: span 2 / -1; } }
+
+  /* Title block, bottom-left: justified mono intro, then the display headline */
+  #hero .title-block { position: absolute; left: 0; right: 0; bottom: clamp(150px, 22vh, 210px); z-index: 4; pointer-events: none;
+    transition: opacity .8s var(--ease), transform 1.2s var(--ease); }
+  #hero .title-block .mono--justify { margin-bottom: clamp(20px, 3vh, 40px); }
+  #hero .headline { font-size: clamp(72px, 15vw, 240px); mix-blend-mode: difference; color: #f4f7f5; }
+  #hero .headline .line:nth-child(2) { padding-left: calc(100% / 12 * 2); }
+  @media (max-width: 720px) { #hero .headline .line:nth-child(2) { padding-left: 25%; } }
+  #hero.cleared .title-block { opacity: 0; transform: translateY(-40px); }
+
+  /* Loader-style HUD: a 2px bar, then words spread across the grid */
+  #hero .hud { position: absolute; left: 0; right: 0; bottom: 24px; z-index: 5; transition: opacity .6s; }
+  #hero.cleared .hud { opacity: 0; pointer-events: none; }
+  #hero .hud__top { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 14px; }
+  #hero .hud__top .mono { opacity: .7; }
+  #hero .bar { height: 2px; background: #f4f7f533; border-radius: 1px; overflow: hidden; margin-bottom: 10px; }
+  #hero .bar__fill { height: 100%; background: var(--paper); transform: scaleX(0); transform-origin: left; transition: transform .25s linear; }
+  #hero .hud__words { color: #f4f7f599; font-variant-numeric: tabular-nums; }
+  #hero .hud__words span:nth-child(1) { grid-column: 1 / span 1; }
+  #hero .hud__words span:nth-child(2) { grid-column: 2 / span 2; }
+  #hero .hud__words span:nth-child(3) { grid-column: 7 / span 1; }
+  #hero .hud__words span:nth-child(4) { grid-column: 8 / span 1; }
+  #hero .hud__words span:nth-child(5) { grid-column: 10 / span 1; color: var(--accent); }
+  #hero .hud__words span:nth-child(6) { grid-column: 11 / span 1; color: var(--paper); }
+  #hero .hud__words span:nth-child(7) { grid-column: 12 / span 1; justify-self: end; color: var(--paper); }
+  @media (max-width: 720px) {
+    #hero .hud__words span:nth-child(2) { grid-column: 2 / span 1; white-space: nowrap; }
+    #hero .hud__words span:nth-child(3), #hero .hud__words span:nth-child(4), #hero .hud__words span:nth-child(6) { display: none; }
+    #hero .hud__words span:nth-child(5) { grid-column: 3 / span 1; justify-self: end; }
+    #hero .hud__words span:nth-child(7) { grid-column: 4 / span 1; }
+    #hero .hud__top .mono { max-width: 180px; }
+  }
+  .dots::after { content: ""; animation: dots 1.2s steps(1) infinite; }
+  @keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+
+  /* Brush cursor */
+  #hero .cursor { position: fixed; left: 0; top: 0; z-index: 6; pointer-events: none; border: 1px solid #f4f7f5cc; border-radius: 50%;
+    display: grid; place-items: center; color: var(--paper); opacity: 0; transition: opacity .3s; }
+  #hero .cursor.on { opacity: 1; }
+  #hero.cleared .cursor { opacity: 0; }
+  @media (hover: none) { #hero .cursor { display: none; } }
+
+  /* After the fog: the quote, opening with an arrow and a hanging indent */
+  #hero .after { position: absolute; inset: 0; z-index: 4; display: grid; align-items: center; pointer-events: none; }
+  #hero .after::before { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 55% at 50% 50%, #1a1c1ab3, transparent 75%); opacity: 0; transition: opacity 1.2s var(--ease); }
+  #hero .after.in::before { opacity: 1; }
+  #hero .quote { position: relative; grid-column: 2 / span 10; }
+  #hero .quote .pill { margin-bottom: 28px; }
+  /* Each hand-set line stays on one line; only the first gets the hanging indent */
+  #hero blockquote { font: 400 clamp(30px, 3.9vw, 62px)/1 var(--serif); letter-spacing: -.01em; }
+  #hero blockquote .line { white-space: nowrap; }
+  #hero blockquote .line:first-child { padding-left: calc(100% / 10 * 1.5); }
+  #hero blockquote em { font-style: italic; color: #ffd89a; }
+  #hero .quote figcaption { margin-top: 28px; display: flex; gap: 16px; }
+  #hero .after.in .quote figcaption { opacity: .75; } /* hidden until the quote reveals */
+  @media (max-width: 720px) {
+    #hero .quote { grid-column: 1 / -1; }
+    #hero blockquote .line { white-space: normal; }
+    #hero blockquote .line:first-child { padding-left: 0; }
+    #hero blockquote .line, #hero blockquote .line > span { display: inline; }
+    #hero blockquote .line > span { transform: none; }
+    #hero .after .quote { opacity: 0; transition: opacity 1.2s var(--ease); }
+    #hero .after.in .quote { opacity: 1; }
+  }
+
+  /* "Next" row, spread across the grid like a footer row. A countdown line runs down,
+     then the page carries the visitor into the world by itself (no scrolling). */
+  #hero .next { position: absolute; left: 0; right: 0; bottom: 24px; z-index: 5; align-items: end; opacity: 0; transform: translateY(12px);
+    transition: opacity 1s var(--ease), transform 1s var(--ease); pointer-events: none; }
+  #hero .next.in { opacity: 1; transform: none; pointer-events: auto; }
+  #hero .next > :nth-child(1) { grid-column: 1 / span 2; }
+  #hero .next > :nth-child(2) { grid-column: 4 / span 2; opacity: .6; }
+  #hero .next > :nth-child(3) { grid-column: 7 / span 1; justify-self: center; }
+  #hero .next > :nth-child(4) { grid-column: span 3 / -1; justify-self: end; }
+  #hero .countdown { display: block; height: 1px; margin-top: 10px; background: #f4f7f533; position: relative; overflow: hidden; }
+  #hero .countdown::after { content: ""; position: absolute; inset: 0; background: var(--paper); transform: scaleX(0); transform-origin: left; }
+  #hero .next.in .countdown::after { animation: countdown var(--enter-ms, 5600ms) linear forwards; }
+  @keyframes countdown { to { transform: scaleX(1); } }
+
+  /* Entering: quote and cue fade, the frame zooms forward, then the veil takes over */
+  #hero.entering .after, #hero.entering .next { opacity: 0 !important; pointer-events: none; transition: opacity .6s var(--ease); }
+  #hero.entering .scene { transform: scale(1.12); transition-duration: 1.2s; }
+
+  /* Veil: a fixed copy of the same frame, shown while the page jumps to the world behind it,
+     then faded out to reveal the live MANI world — so the hand-off looks like one shot */
+  .enter-veil { position: fixed; inset: 0; z-index: 900; pointer-events: none; opacity: 0; visibility: hidden; background: var(--ink);
+    transition: opacity 1.2s var(--ease), visibility 0s 1.2s; }
+  .enter-veil.on { opacity: 1; visibility: visible; transition: none; }
+  .enter-veil img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 55%; transform: scale(1.12); }
+  .enter-veil.solid img { opacity: 0; } /* on the way back out: plain dark, matching #real */
+  @media (max-width: 720px) {
+    #hero .next > :nth-child(1) { grid-column: 1 / span 2; }
+    #hero .next > :nth-child(2) { display: none; }
+    #hero .next > :nth-child(3) { grid-column: 3 / span 1; }
+    #hero .next > :nth-child(4) { grid-column: 4 / span 1; }
+  }
+
+  /* =========================================================
+     2. MANI walk — scroll-driven. The stage sticks and the window grows from a framed
+        card to full screen (--p goes 0 → 1). A data sheet sits over it until immersed.
+     ========================================================= */
+  #walk { height: 200vh; position: relative; background: var(--ink); color: var(--paper); }
+  #walk .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+  #walk .window { --p: 0; position: absolute; inset: 0; overflow: hidden; background: #131715;
+    transform: scale(calc(0.55 + 0.45 * var(--p))); border-radius: calc(20px * (1 - var(--p))); will-change: transform; }
+  #walk iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; opacity: 0; transition: opacity .6s; pointer-events: none; }
+  #walk iframe.loaded { opacity: 1; }
+  #walk.immersed iframe { pointer-events: auto; }
+  #walk .window::after { content: ""; position: absolute; inset: 0; background: #1a1c1a; opacity: calc(.55 * (1 - var(--p))); pointer-events: none; }
+
+  #walk .sheet { position: absolute; inset: 0; display: grid; align-content: center; gap: 6px; pointer-events: none; opacity: var(--o, 1); }
+  #walk .sheet__row { row-gap: 4px; }
+  #walk .sheet__row > :first-child { opacity: .55; }
+  #walk .sheet__row:nth-child(1) > :first-child { grid-column: 4 / span 2; } #walk .sheet__row:nth-child(1) > :last-child { grid-column: span 2 / 10; justify-self: end; }
+  #walk .sheet__row:nth-child(2) > :first-child { grid-column: 5 / span 2; } #walk .sheet__row:nth-child(2) > :last-child { grid-column: 7 / span 3; }
+  #walk .sheet__row:nth-child(3) > :first-child { grid-column: 4 / span 2; } #walk .sheet__row:nth-child(3) > :last-child { grid-column: 6 / span 4; justify-self: end; }
+  #walk .sheet__row:nth-child(4) > :first-child { grid-column: 6 / span 1; } #walk .sheet__row:nth-child(4) > :last-child { grid-column: 7 / span 3; }
+  #walk .sheet__row:nth-child(5) > :first-child { grid-column: 4 / span 3; } #walk .sheet__row:nth-child(5) > :last-child { grid-column: 7 / span 3; justify-self: end; }
+  #walk .sheet__row:nth-child(6) > :first-child { grid-column: 5 / span 2; } #walk .sheet__row:nth-child(6) > :last-child { grid-column: 7 / span 3; }
+  #walk .sheet__title { grid-column: 4 / span 6; margin: 18px 0 10px; font-size: clamp(40px, 6vw, 88px); }
+  @media (max-width: 720px) {
+    #walk .sheet__row > :first-child { grid-column: 1 / span 2 !important; }
+    #walk .sheet__row > :last-child { grid-column: 3 / span 2 !important; justify-self: end !important; }
+    #walk .sheet__title { grid-column: 1 / -1; }
+  }
+  #walk .skip { position: absolute; right: var(--gutter); bottom: 24px; z-index: 2; opacity: 0; transition: opacity .4s; pointer-events: none; }
+  #walk.immersed .skip { opacity: 1; pointer-events: auto; }
+
+  /* =========================================================
+     3. Real people
+     ========================================================= */
+  #real .display > .line:nth-child(1) { grid-column: 1 / span 7; }
+  #real .display > .line:nth-child(2) { grid-column: 6 / -1; }
+  #real .display > .line:nth-child(3) { grid-column: 2 / span 8; margin-top: .15em; }
+  #real .display > .line:nth-child(4) { grid-column: 7 / -1; }
+  @media (max-width: 720px) {
+    #real .display > .line { grid-column: 1 / -1 !important; }
+    #real .display > .line:nth-child(even) { padding-left: 25%; }
+  }
+  .photo { margin-top: clamp(48px, 8vh, 96px); }
+  .photo__frame { aspect-ratio: 16 / 8; border-radius: 6px; overflow: hidden; display: grid; place-items: center;
+    background: repeating-linear-gradient(135deg, #f4f7f50a 0 12px, transparent 12px 24px), #222622; border: 1px dashed #f4f7f533; }
+  .photo__frame span { opacity: .5; }
+  .photo figcaption { margin-top: 12px; }
+  .photo figcaption > :nth-child(1) { grid-column: 1 / span 2; opacity: .5; }
+  .photo figcaption > :nth-child(2) { grid-column: 4 / span 4; }
+  .photo figcaption > :nth-child(3) { grid-column: span 3 / -1; justify-self: end; opacity: .5; }
+  @media (max-width: 720px) { .photo figcaption > :nth-child(1) { display: none; } .photo figcaption > :nth-child(2) { grid-column: 1 / span 4; } .photo figcaption > :nth-child(3) { grid-column: 1 / -1; justify-self: start; margin-top: 4px; } }
+  .why { margin-top: clamp(48px, 8vh, 96px); }
+  .why .mono { grid-column: 1 / span 3; opacity: .5; padding-top: 10px; }
+  .why__body { grid-column: 5 / span 7; }
+  .why__lead { font: 400 clamp(32px, 4vw, 56px)/1 var(--serif); margin-bottom: 20px; }
+  .why__lead i { color: var(--accent); }
+  .why__body p:last-child { font-size: 18px; max-width: 560px; opacity: .8; }
+  @media (max-width: 720px) { .why .mono, .why__body { grid-column: 1 / -1; } .why .mono { margin-bottom: 16px; } }
+
+  /* =========================================================
+     4. How change happens — tap-through with a growing root line
+     ========================================================= */
+  #change .display { margin-bottom: clamp(40px, 7vh, 80px); }
+  .steps { position: relative; padding-top: 28px; }
+  .steps__root { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--line); border-radius: 1px; }
+  .steps__root::after { content: ""; position: absolute; inset: 0; background: var(--green); transform-origin: left; transform: scaleX(var(--root, .3333)); transition: transform 1s var(--ease); }
+  .step { grid-column: span 4; text-align: left; background: none; border: 0; padding: 0 16px 0 0; color: inherit; cursor: pointer; font: inherit; opacity: .35; transition: opacity .5s var(--ease); }
+  .step[aria-selected="true"], .step.seen { opacity: 1; }
+  .step .mono { display: block; margin-bottom: 18px; }
+  .step__name { display: block; font: 400 clamp(36px, 4.4vw, 64px)/.9 var(--serif); text-transform: uppercase; }
+  .step__name i { text-transform: none; }
+  .step__text { display: block; margin-top: 16px; max-width: 320px; font-size: 17px; }
+  .step[aria-selected="true"] .step__name { color: var(--green); }
+  @media (max-width: 720px) { .step { grid-column: 1 / -1; padding: 0 0 28px; } }
+  .steps__nav { margin-top: 40px; display: flex; justify-content: space-between; align-items: center; }
+
+  /* =========================================================
+     5. Evidence
+     ========================================================= */
+  #evidence .display { margin-bottom: clamp(40px, 7vh, 80px); }
+  .stats { row-gap: 40px; }
+  .stat { grid-column: span 4; border-top: 1px solid var(--line); padding-top: 16px; }
+  .stat .mono { display: flex; justify-content: space-between; opacity: .6; }
+  .stat__num { display: block; margin: 28px 0 14px; font: 400 clamp(84px, 11vw, 180px)/.8 var(--serif); font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .stat__label { max-width: 260px; }
+  @media (max-width: 720px) { .stat { grid-column: 1 / -1; } }
+  .source { margin-top: 40px; opacity: .55; }
+
+  /* =========================================================
+     6. Programmes — indexed list
+     ========================================================= */
+  .prog__title { font: 400 clamp(32px, 4vw, 56px)/1 var(--serif); text-indent: calc(100% / 12 * 3); max-width: 1000px; margin-bottom: clamp(40px, 7vh, 72px); }
+  .prog__title .glyph { font-style: italic; color: var(--accent); }
+  @media (max-width: 720px) { .prog__title { text-indent: 2.5rem; } }
+  .prog__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .prog__list li { border-bottom: 1px solid var(--line); padding: 18px 0; align-items: baseline; transition: padding .5s var(--ease); }
+  .prog__list li:hover { padding-left: 16px; }
+  .prog__list .mono { grid-column: 1 / span 2; opacity: .5; }
+  .prog__list .name { grid-column: 3 / -1; font: 400 clamp(30px, 4vw, 60px)/1 var(--serif); text-transform: uppercase; }
+  @media (max-width: 720px) { .prog__list .mono { grid-column: 1 / span 1; } .prog__list .name { grid-column: 2 / -1; } }
+
+  /* =========================================================
+     7. The ask
+     ========================================================= */
+  #ask { min-height: 100vh; min-height: 100svh; background: var(--green); color: var(--paper); display: flex; flex-direction: column; justify-content: center; --line: #f4f7f533; }
+  #ask .sec__head .pill { background: var(--paper); color: var(--green); }
+  #ask .display > .line:nth-child(2) { padding-left: calc(100% / 12 * 3); }
+  .choices { display: flex; flex-wrap: wrap; gap: 10px; margin: clamp(40px, 7vh, 64px) 0 28px; }
+  .choice { background: none; border: 1px solid #f4f7f566; color: var(--paper); border-radius: 999px; padding: 10px 16px; cursor: pointer; transition: background .3s, color .3s, border-color .3s; }
+  .choice:hover { border-color: var(--paper); }
+  .choice[aria-pressed="true"] { background: var(--paper); color: var(--green); border-color: var(--paper); }
+  .ask__msg { font: 400 clamp(28px, 3.4vw, 48px)/1.05 var(--serif); max-width: 900px; min-height: 2.1em; }
+  .ask__msg i { color: #ffd89a; }
+  .ask__foot { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px; }
+  .ask__foot p { opacity: .8; }
+
+  /* =========================================================
+     8. Footer
+     ========================================================= */
+  footer { background: var(--ink); color: var(--paper); padding: 72px 0 24px; --line: #f4f7f522; overflow: hidden; }
+  .foot__cols { row-gap: 32px; }
+  .foot__col { grid-column: span 3; }
+  .foot__col h3 { opacity: .5; margin-bottom: 14px; }
+  .foot__col p, .foot__col li { font-size: 14px; line-height: 1.5; opacity: .85; }
+  .foot__col ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  @media (max-width: 1024px) { .foot__col { grid-column: span 6; } }
+  @media (max-width: 720px)  { .foot__col { grid-column: 1 / -1; } }
+  .wordmark { margin-top: 72px; font: 400 15.2vw/.78 var(--serif); text-transform: uppercase; letter-spacing: -.02em; white-space: nowrap; }
+  .wordmark i { text-transform: none; }
+  .foot__base { margin-top: 20px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; opacity: .5; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    #hero .grain, #hero .next .scroll-line, .dots::after { animation: none; }
+    #hero .scene, .line > span, .fade, #hero .title-block, .roll__text > span { transition: none; }
+    .line > span, .fade { transform: none; opacity: 1; }
+    #walk .window { transform: none; border-radius: 0; }
+    #walk iframe { transition: none; }
+  }
+</style>
 </head>
 <body>
-  <a class="skip-link" href="#real">Skip to the story</a>
 
-  <!-- Motion chrome (motion.js). Hidden without JS. -->
-  <div class="preloader" aria-hidden="true">
-    <div class="preloader__row">
-      <span class="mono">Intercultural Roots</span>
-      <span class="mono">Clearing the dark</span>
-    </div>
-    <div class="preloader__count"><span class="preloader__num">000</span><span class="preloader__pct">%</span></div>
-    <div class="preloader__bar"><span></span></div>
-  </div>
-  <div class="cursor" aria-hidden="true"><div class="cursor__ring"><span class="cursor__label"></span></div><div class="cursor__dot"></div></div>
-  <div class="progress" aria-hidden="true"><span></span></div>
+<!-- 1. Fog hero -->
+<section id="hero" aria-label="Clear the dark">
+  <img class="scene" src="assets/opening.jpg" alt="The start of the walk: past a slatted gate and a bus shelter, a gravel path winds through an iron fence into misty woodland" fetchpriority="high">
+  <canvas id="fog" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
 
-  <header class="site-header">
-    <a class="site-header__brand" href="#hero"><span class="site-header__mark" aria-hidden="true"></span><span data-copy="site.name">Intercultural Roots</span></a>
-    <nav class="site-header__nav" aria-label="Sections">
-      <a href="#change" class="site-header__link"><span class="mono">01</span> Change</a>
-      <a href="#evidence" class="site-header__link"><span class="mono">02</span> Impact</a>
-      <a href="#programmes" class="site-header__link"><span class="mono">03</span> Programmes</a>
-    </nav>
-    <a class="btn btn--primary btn--sm magnetic" href="https://interculturalroots.org/make-a-donation" data-href="links.donate">
-      <span class="btn__roll" data-label="Donate"><span>Donate</span></span>
+  <header class="nav container grid">
+    <a class="brand" href="#hero">Intercultural Roots</a>
+    <ul class="links mono">
+      <li><a href="#walk"><sup>01</sup>Walk</a></li>
+      <li><a href="#real"><sup>02</sup>Why</a></li>
+      <li><a href="#change"><sup>03</sup>How</a></li>
+      <li><a href="#ask"><sup>04</sup>Give</a></li>
+    </ul>
+    <a class="roll roll--sm roll--paper" href="https://interculturalroots.org/make-a-donation" target="_blank" rel="noopener">
+      <span class="roll__text"><span>Donate</span><span aria-hidden="true">Donate</span></span>
+      <span class="roll__icon" aria-hidden="true"><span>↗</span></span>
     </a>
   </header>
 
-  <main>
-    <!-- 1. Fog hero (hero.js). Without JS: image, quote and buttons show, no fog. -->
-    <section id="hero" class="hero" data-theme="dark" aria-labelledby="hero-title">
-      <img class="hero__img" src="assets/opening.jpg"
-           alt="The start of the walk: past a slatted gate and a bus shelter, a gravel path winds through an iron fence into misty woodland."
-           data-src="hero.image" data-alt="hero.imageAlt">
-      <canvas class="hero__fog" aria-hidden="true" data-cursor="Drag"></canvas>
+  <div class="title-block container" id="headline">
+    <p class="mono mono--justify fade" data-decode>An EcoGPX® story from Intercultural Roots for Public Health</p>
+    <h1 class="display headline" aria-label="Clear the dark">
+      <span class="line"><span style="--i:1">Clear</span></span>
+      <span class="line"><span style="--i:2"><i>the</i> dark</span></span>
+    </h1>
+  </div>
 
-      <div class="hero__prompt" aria-live="polite">
-        <h1 id="hero-title" class="hero__title split" data-copy="hero.prompt">Click and drag to clear the dark spot.</h1>
-        <button type="button" class="btn btn--ghost hero__auto magnetic"><span class="btn__roll" data-label="Clear it for me"><span data-copy="hero.clearForMe">Clear it for me</span></span></button>
-      </div>
-
-      <div class="hero__band">
-        <figure class="hero__quote" tabindex="-1">
-          <blockquote class="split" data-copy="hero.quote">“EcoGPX® helped me get out of a dark spot I was in. It allowed me to reconnect with myself, with others and with the world around me and nature.”</blockquote>
-          <figcaption class="mono" data-copy="hero.quoteBy">Participant, EcoGPX Coventry Launchpad</figcaption>
-        </figure>
-        <div class="hero__actions">
-          <a class="btn btn--primary hero__walk magnetic" href="https://maniengine.com/t/TjLS1dHz0fVh" data-href="links.maniWorld"><span class="btn__roll" data-label="Walk out of the dark spot →"><span data-copy="hero.walk">Walk out of the dark spot →</span></span></a>
-          <a class="hero__skip link-line" href="#real" data-copy="hero.skip">Skip the walk</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- 2. MANI walk overlay (Jack, world.js) -->
-    <section id="walk" class="walk" hidden aria-label="Imagined garden walk">
-      <iframe id="worldFrame" class="walk__frame" title="Imagined garden walk, made with MANI Engine" allow="fullscreen; autoplay; xr-spatial-tracking; gamepad"></iframe>
-      <div class="walk__cover">
-        <img src="assets/opening.jpg" alt="">
-        <p class="walk__entering" data-copy="walk.entering">Entering…</p>
-        <a class="walk__newtab link-line" href="#" target="_blank" rel="noopener" hidden data-copy="walk.newTab">Open the walk in a new tab</a>
-      </div>
-      <p class="walk__hint is-off" data-copy="walk.hint">Click to start, then use arrow keys or WASD to walk.</p>
-      <div class="walk__ui">
-        <button type="button" class="btn btn--ghost walk__portal magnetic"><span class="btn__roll" data-label="Step through the portal"><span data-copy="walk.portal">Step through the portal</span></span></button>
-        <button type="button" class="walk__skip link-line" data-copy="walk.skip">Skip the walk</button>
-      </div>
-    </section>
-
-    <!-- 3. Portal → real people -->
-    <section id="real" class="section real" data-theme="dark" tabindex="-1" aria-labelledby="real-title">
-      <div class="wrap">
-        <p class="eyebrow mono"><span class="eyebrow__idx">(001)</span> Why we exist</p>
-        <p class="statement statement--muted split" data-copy="real.imagined">That garden was imagined.</p>
-        <h2 id="real-title" class="statement split" data-copy="real.real">These people are real.</h2>
-      </div>
-      <figure class="real__photo media" data-parallax="0.12">
-        <div class="media__clip"><img src="assets/ecogpx-coventry-group-2024.jpg" alt="" data-src="real.photo" data-alt="real.photoAlt" loading="lazy"></div>
-        <figcaption class="mono credit" data-copy="real.photoCredit">EcoGPX Coventry, 2024. Image: Intercultural Roots.</figcaption>
-      </figure>
-      <div class="wrap real__text">
-        <h3 class="statement statement--md split"><span>Creativity</span> <span class="arrow" aria-hidden="true">↪</span> <span>reconnects us.</span></h3>
-        <p class="lede fade-up" data-copy="real.body">Loneliness, inequality and disconnection affect how we live. We bring artists, practitioners and communities together to improve wellbeing, strengthen belonging and reconnect people with nature and place.</p>
-      </div>
-    </section>
-
-    <!-- 4. How change happens (tap-through) -->
-    <section id="change" class="section change" data-theme="light" aria-labelledby="change-title">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="eyebrow mono"><span class="eyebrow__idx">(002)</span> <span id="change-title" data-copy="change.label">How change happens</span></p>
-          <p class="mono change__counter" aria-hidden="true"><span class="change__current">01</span> / 03</p>
-        </div>
-
-        <div class="change__grid">
-          <div class="change__copy">
-            <ol class="change__tabs">
-              <li><button type="button" class="change__tab pill" data-step="0" aria-current="step"><span class="mono">01</span> <span data-copy="change.steps.0.title">Listen</span></button></li>
-              <li><button type="button" class="change__tab pill" data-step="1"><span class="mono">02</span> <span data-copy="change.steps.1.title">Create Together</span></button></li>
-              <li><button type="button" class="change__tab pill" data-step="2"><span class="mono">03</span> <span data-copy="change.steps.2.title">Connect</span></button></li>
-            </ol>
-
-            <div class="change__panels" aria-live="polite">
-              <article class="change__panel is-active" data-step="0">
-                <h3 class="change__title"><span class="mono change__num">01</span><span data-copy="change.steps.0.title">Listen</span></h3>
-                <p class="change__text" data-copy="change.steps.0.text">Start with “What Matters to You?”</p>
-                <form class="listen" autocomplete="off">
-                  <label class="mono" for="listen-word" data-copy="change.listen.label">What matters to you?</label>
-                  <div class="listen__row">
-                    <input id="listen-word" class="listen__input" type="text" maxlength="24" placeholder="One word, e.g. belonging" data-cursor="Type">
-                    <button type="submit" class="btn btn--dark magnetic"><span class="btn__roll" data-label="Plant it"><span data-copy="change.listen.button">Plant it</span></span></button>
-                  </div>
-                  <small class="listen__note" data-copy="change.listen.note">Stays on your screen only. Nothing is saved or sent.</small>
-                </form>
-              </article>
-              <article class="change__panel" data-step="1">
-                <h3 class="change__title"><span class="mono change__num">02</span><span data-copy="change.steps.1.title">Create Together</span></h3>
-                <p class="change__text" data-copy="change.steps.1.text">Arts, movement, storytelling and cultural exchange.</p>
-              </article>
-              <article class="change__panel" data-step="2">
-                <h3 class="change__title"><span class="mono change__num">03</span><span data-copy="change.steps.2.title">Connect</span></h3>
-                <p class="change__text" data-copy="change.steps.2.text">Community participation and ethical technology, shaped by lived experience.</p>
-              </article>
-            </div>
-
-            <div class="change__nav">
-              <button type="button" class="btn btn--line change__prev magnetic" disabled><span class="btn__roll" data-label="← Back"><span data-copy="change.back">← Back</span></span></button>
-              <button type="button" class="btn btn--dark change__next magnetic"><span class="btn__roll" data-label="Next step →"><span>Next step →</span></span></button>
-            </div>
-          </div>
-
-          <div class="change__media">
-            <figure class="change__figure is-active" data-step="0">
-              <div class="media__clip"><img src="assets/bridging-cultures-2025.jpg" alt="A facilitator speaks to a circle of participants standing in a bright studio." data-src="change.steps.0.image" data-alt="change.steps.0.alt" loading="lazy"></div>
-              <figcaption class="mono credit" data-copy="change.steps.0.credit">Bridging Cultures, Coventry, 2025. Image: Intercultural Roots.</figcaption>
-            </figure>
-            <figure class="change__figure" data-step="1">
-              <div class="media__clip"><img src="assets/forum-theatre-2024.jpg" alt="A man in a blue scarf raises his arms in a forum theatre session, with a group moving behind him." data-src="change.steps.1.image" data-alt="change.steps.1.alt" decoding="async"></div>
-              <figcaption class="mono credit" data-copy="change.steps.1.credit">Boal Forum Theatre, 2024. Image: Intercultural Roots.</figcaption>
-            </figure>
-            <figure class="change__figure" data-step="2">
-              <div class="media__clip"><img src="assets/ecogpx-coventry-hearts-2024.jpg" alt="Three people smile in a sunny garden, holding up heart shapes woven from willow." data-src="change.steps.2.image" data-alt="change.steps.2.alt" decoding="async"></div>
-              <figcaption class="mono credit" data-copy="change.steps.2.credit">EcoGPX Coventry, 2024. Photo: Kopal Gupta.</figcaption>
-            </figure>
-          </div>
-        </div>
-
-        <div class="root" aria-hidden="true">
-          <svg class="root__svg" viewBox="0 0 1000 60" preserveAspectRatio="none">
-            <path class="root__bg" d="M0,30 C120,8 260,52 500,30 S860,8 1000,30" pathLength="1"/>
-            <path class="root__grow" d="M0,30 C120,8 260,52 500,30 S860,8 1000,30" pathLength="1"/>
-          </svg>
-          <span class="root__node is-on" style="left:0%"></span>
-          <span class="root__node" style="left:50%"></span>
-          <span class="root__node" style="left:100%"></span>
-        </div>
-        <ul class="leaves" aria-label="Words planted on this screen"></ul>
-      </div>
-    </section>
-
-    <!-- 5. Evidence -->
-    <section id="evidence" class="section evidence" data-theme="light" aria-labelledby="evidence-title">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="eyebrow mono"><span class="eyebrow__idx">(003)</span> <span data-copy="evidence.label">2024–25 impact</span></p>
-        </div>
-        <h2 id="evidence-title" class="statement split" data-copy="evidence.heading">Real people. Real connection.</h2>
-
-        <ul class="stats">
-          <li class="stat fade-up">
-            <span class="stat__num" data-count="evidence.stats.0">1,729</span>
-            <span class="stat__label" data-copy="evidence.stats.0.label">people engaged with activities, resources and events</span>
-          </li>
-          <li class="stat fade-up">
-            <span class="stat__num" data-count="evidence.stats.1">789</span>
-            <span class="stat__label" data-copy="evidence.stats.1.label">network members</span>
-          </li>
-          <li class="stat fade-up">
-            <span class="stat__num" data-count="evidence.stats.2">50+</span>
-            <span class="stat__label" data-copy="evidence.stats.2.label">countries represented</span>
-          </li>
-        </ul>
-
-        <figure class="orbs fade-up">
-          <canvas class="orbs__canvas" aria-hidden="true" data-cursor="Push"></canvas>
-          <figcaption class="orbs__caption">
-            <span class="mono orbs__count" data-copy="orbs.label">50+ countries represented</span>
-            <span class="orbs__hint" data-copy="orbs.hint">Move through them, or grab one and throw it. Watch them find each other again.</span>
-          </figcaption>
-        </figure>
-
-        <dl class="spec fade-up">
-          <div class="spec__row"><dt class="mono">Source</dt><dd>IRPH Impact Report 2024–25</dd></div>
-          <div class="spec__row"><dt class="mono">Pages</dt><dd>3 and 10</dd></div>
-          <div class="spec__row"><dt class="mono">Period</dt><dd>2024–25</dd></div>
-        </dl>
-      </div>
-    </section>
-
-    <!-- 6. What IRPH does -->
-    <section id="programmes" class="section programmes" data-theme="dark" aria-labelledby="programmes-title">
-      <div class="wrap">
-        <div class="section-head">
-          <p class="eyebrow mono"><span class="eyebrow__idx">(004)</span> <span id="programmes-title" data-copy="programmes.label">What we do</span></p>
-        </div>
-        <ol class="index-list">
-          <li class="index-list__item fade-up"><span class="mono index-list__idx">(001)</span><span class="index-list__text" data-copy="programmes.items.0">Creative health</span><span class="index-list__arrow" aria-hidden="true">↪</span></li>
-          <li class="index-list__item fade-up"><span class="mono index-list__idx">(002)</span><span class="index-list__text" data-copy="programmes.items.1">Arts Disability Network</span><span class="index-list__arrow" aria-hidden="true">↪</span></li>
-          <li class="index-list__item fade-up"><span class="mono index-list__idx">(003)</span><span class="index-list__text" data-copy="programmes.items.2">EcoGPX®</span><span class="index-list__arrow" aria-hidden="true">↪</span></li>
-          <li class="index-list__item fade-up"><span class="mono index-list__idx">(004)</span><span class="index-list__text" data-copy="programmes.items.3">Forum Theatre</span><span class="index-list__arrow" aria-hidden="true">↪</span></li>
-        </ol>
-      </div>
-      <div class="marquee" aria-hidden="true"><div class="marquee__track"></div></div>
-    </section>
-
-    <!-- 7. The ask -->
-    <section id="ask" class="ask" data-theme="green" aria-labelledby="ask-title">
-      <div class="wrap ask__inner">
-        <p class="eyebrow mono"><span class="eyebrow__idx">(005)</span> Be part of it</p>
-        <h2 id="ask-title" class="statement split" data-copy="ask.question">What would you help grow?</h2>
-
-        <div class="ask__choices" role="group" aria-labelledby="ask-title">
-          <button type="button" class="pill pill--choice" aria-pressed="false" data-copy="programmes.items.0">Creative health</button>
-          <button type="button" class="pill pill--choice" aria-pressed="false" data-copy="programmes.items.1">Arts Disability Network</button>
-          <button type="button" class="pill pill--choice" aria-pressed="false" data-copy="programmes.items.2">EcoGPX®</button>
-          <button type="button" class="pill pill--choice" aria-pressed="false" data-copy="programmes.items.3">Forum Theatre</button>
-        </div>
-        <p class="ask__message" aria-live="polite"></p>
-
-        <div class="ask__card">
-          <div>
-            <p class="ask__line1" data-copy="ask.line1">Help Intercultural Roots reach more people.</p>
-            <p class="ask__line2" data-copy="ask.line2">Donate. Be part of what grows next.</p>
-            <p class="mono ask__url" data-copy="ask.urlText">interculturalroots.org/make-a-donation</p>
-          </div>
-          <a class="btn btn--primary btn--xl magnetic" href="https://interculturalroots.org/make-a-donation" data-href="links.donate">
-            <span class="btn__roll" data-label="Donate →"><span>Donate →</span></span>
-          </a>
-        </div>
-
-        <svg class="ask__sprout" viewBox="0 0 200 300" aria-hidden="true">
-          <path class="ask__stem" d="M100,300 C100,240 96,200 100,150 C104,110 100,80 100,40" pathLength="1"/>
-          <path class="ask__leaf ask__leaf--1" d="M100,190 C70,180 50,160 46,130 C76,134 96,154 100,190 Z"/>
-          <path class="ask__leaf ask__leaf--2" d="M100,130 C130,120 150,100 154,70 C124,74 104,94 100,130 Z"/>
-          <path class="ask__leaf ask__leaf--3" d="M100,70 C84,60 76,44 78,24 C94,30 102,46 100,70 Z"/>
-        </svg>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer" data-theme="dark">
-    <div class="wrap">
-      <div class="footer__top">
-        <img class="footer__logo" src="assets/irph-logo.jpg" alt="Intercultural Roots logo" data-src="site.logo" width="56" height="56">
-        <div>
-          <p class="footer__name" data-copy="site.fullName">Intercultural Roots for Public Health</p>
-          <p class="mono" data-copy="site.charity">Registered Charity No. 1179885</p>
-        </div>
-      </div>
-      <div class="footer__cols">
-        <div>
-          <p class="mono footer__label">Photo credits</p>
-          <ul class="footer__list">
-            <li>Boal Forum Theatre, 2024. Image: Intercultural Roots.</li>
-            <li>EcoGPX Coventry, 2024. Image: Intercultural Roots.</li>
-            <li>EcoGPX Coventry, 2024. Photo: Kopal Gupta.</li>
-            <li>Bridging Cultures, Coventry, 2025. Image: Intercultural Roots.</li>
-          </ul>
-        </div>
-        <div>
-          <p class="mono footer__label">Sources</p>
-          <ul class="footer__list">
-            <li data-copy="evidence.source">Source: IRPH Impact Report 2024–25, pp. 3 and 10.</li>
-            <li>Wording from the IRPH Creator Lab brief.</li>
-          </ul>
-        </div>
-        <div>
-          <p class="mono footer__label">Made with</p>
-          <ul class="footer__list">
-            <li data-copy="footer.ai">Built with AI assistance — see the workflow doc.</li>
-            <li data-copy="footer.mani">The 3D garden is an imagined space generated with MANI Engine.</li>
-          </ul>
-        </div>
-      </div>
-
-      <details class="sources">
-        <summary><span class="mono">(006)</span> Sources, AI use &amp; workflow</summary>
-        <div class="sources__body">
-          <h3 class="mono footer__label">Fact-check table</h3>
-          <div class="sources__table"><table>
-            <thead><tr><th>Claim</th><th>Wording on page</th><th>Source</th><th>Page</th><th>Checked by</th></tr></thead>
-            <tbody class="facts"></tbody>
-          </table></div>
-          <h3 class="mono footer__label">AI use</h3>
-          <ul class="footer__list ai-use"></ul>
-          <h3 class="mono footer__label">Reusable workflow</h3>
-          <ol class="footer__list workflow">
-            <li>Read the brief; list the claims and the three questions to answer.</li>
-            <li>Put every word, number, link and credit in <code>src/data.js</code>.</li>
-            <li>Fact-check each claim against its source (table above).</li>
-            <li>Generate the 3D world with MANI from a written prompt; test the embed.</li>
-            <li>Build, then test: phone, keyboard, reduced motion, 3D skipped.</li>
-            <li>Run <code>build.py</code> to produce one self-contained file.</li>
-          </ol>
-        </div>
-      </details>
+  <div class="hud container">
+    <div class="hud__top">
+      <span class="mono mono--justify">Move your cursor across the screen to clear the dark spot</span>
+      <button class="roll roll--sm roll--paper" id="fog-auto">
+        <span class="roll__text"><span>Clear it for me</span><span aria-hidden="true">Clear it for me</span></span>
+        <span class="roll__icon" aria-hidden="true"><span>→</span></span>
+      </button>
     </div>
-  </footer>
+    <div class="bar"><div class="bar__fill" id="fog-fill"></div></div>
+    <div class="hud__words grid mono" aria-live="polite">
+      <span>Fog</span><span class="dots">lifting</span><span>move</span><span>around</span>
+      <span id="fog-pct">000%</span><span>out of</span><span>100%</span>
+    </div>
+  </div>
 
-  <script src="src/data.js"></script>
-  <script src="src/sections.js"></script>
-  <script src="src/hero.js"></script>
-  <script src="src/motion.js"></script>
-  <script src="src/orbs.js"></script>
-  <script src="src/world.js"></script>
+  <div class="after" id="fog-after">
+    <div class="container grid">
+      <figure class="quote">
+        <span class="pill mono fade">In their words</span>
+        <blockquote>
+          <span class="line"><span style="--i:0">“EcoGPX® helped me get out of</span></span>
+          <span class="line"><span style="--i:1">a <em>dark spot</em> I was in. It allowed me</span></span>
+          <span class="line"><span style="--i:2">to reconnect with myself, with others</span></span>
+          <span class="line"><span style="--i:3">and with the world around me and nature.”</span></span>
+        </blockquote>
+        <figcaption class="mono fade" style="--i:5"><span>(Participant)</span><span>EcoGPX Coventry Launchpad</span></figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="next container grid mono" id="fog-next">
+    <span>(Next)</span>
+    <span>Walking out of the dark spot<span class="countdown" aria-hidden="true"></span></span>
+    <button class="roll roll--sm roll--paper" id="enter-now">
+      <span class="roll__text"><span>Enter now</span><span aria-hidden="true">Enter now</span></span>
+      <span class="roll__icon" aria-hidden="true"><span>→</span></span>
+    </button>
+    <a href="#real" id="skip-walk">Skip the walk ↓</a>
+  </div>
+
+  <div class="cursor mono" id="fog-cursor" aria-hidden="true">Move</div>
+</section>
+
+<div class="enter-veil" id="enter-veil" aria-hidden="true"><img src="assets/opening.jpg" alt=""></div>
+
+<!-- 2. MANI walk (preloaded; the page carries you in after the fog, or scroll here) -->
+<section id="walk" aria-label="3D walk">
+  <div class="stage">
+    <div class="window" id="walk-window">
+      <iframe id="world"
+        src="https://maniengine.com/t/TjLS1dHz0fVh"
+        title="EcoGPX Coventry Edgelands Trail — 3D walk"
+        loading="eager"
+        allow="fullscreen; autoplay; gamepad; xr-spatial-tracking"
+        allowfullscreen></iframe>
+    </div>
+
+    <div class="sheet container" id="walk-sheet" aria-hidden="true">
+      <div class="sheet__row grid mono"><span>World</span><span>/01</span></div>
+      <div class="sheet__row grid mono"><span>Place:</span><span>Coventry Edgelands</span></div>
+      <div class="sheet__row grid mono"><span>Type:</span><span>Imagined space</span></div>
+      <div class="sheet__row grid mono"><span>Made in:</span><span>MANI Engine</span></div>
+      <div class="sheet__row grid mono"><span>Controls:</span><span>WASD / Arrows</span></div>
+      <div class="sheet__row grid mono"><span>Ends at:</span><span>The portal</span></div>
+      <div class="grid"><p class="display sheet__title">Keep <i>scrolling</i> to step in</p></div>
+    </div>
+
+    <a class="roll roll--sm roll--paper skip" href="#real">
+      <span class="roll__text"><span>Skip the walk</span><span aria-hidden="true">Skip the walk</span></span>
+      <span class="roll__icon" aria-hidden="true"><span>↓</span></span>
+    </a>
+  </div>
+</section>
+
+<!-- 3. Portal → real people (Why do we exist?) -->
+<section id="real" class="sec sec--dark reveal">
+  <div class="container">
+    <div class="sec__head grid"><span class="pill mono">Why we exist</span><span class="mono idx" data-decode>(02)</span></div>
+    <h2 class="display grid">
+      <span class="line"><span style="--i:0">That garden</span></span>
+      <span class="line"><span style="--i:1"><i>was imagined.</i></span></span>
+      <span class="line"><span style="--i:2"><span class="glyph">↪</span>These people</span></span>
+      <span class="line"><span style="--i:3"><i>are real.</i></span></span>
+    </h2>
+
+    <figure class="photo fade">
+      <div class="photo__frame"><span class="mono">Photo — awaiting permission</span></div>
+      <figcaption class="grid mono"><span>(Image)</span><span>EcoGPX Coventry, 2024.</span><span>Image: Intercultural Roots.</span></figcaption>
+    </figure>
+
+    <div class="why grid">
+      <span class="mono" data-decode>(Why)</span>
+      <div class="why__body fade">
+        <p class="why__lead">Creativity <i>reconnects</i> us.</p>
+        <p>Loneliness, inequality and disconnection affect how we live. We bring artists, practitioners and communities together to improve wellbeing, strengthen belonging and reconnect people with nature and place.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. How change happens -->
+<section id="change" class="sec reveal">
+  <div class="container">
+    <div class="sec__head grid"><span class="pill mono">How change happens</span><span class="mono idx" data-decode>(03)</span></div>
+    <h2 class="display">
+      <span class="line"><span style="--i:0">How change</span></span>
+      <span class="line"><span style="--i:1"><i>happens</i></span></span>
+    </h2>
+
+    <div class="steps grid" role="tablist" aria-label="How change happens" id="steps">
+      <div class="steps__root" aria-hidden="true"></div>
+      <button class="step" role="tab" aria-selected="true">
+        <span class="mono">(01)</span>
+        <span class="step__name">Listen</span>
+        <span class="step__text">Start with “What Matters to You?”</span>
+      </button>
+      <button class="step" role="tab" aria-selected="false">
+        <span class="mono">(02)</span>
+        <span class="step__name">Create <i>together</i></span>
+        <span class="step__text">Arts, movement, storytelling and cultural exchange.</span>
+      </button>
+      <button class="step" role="tab" aria-selected="false">
+        <span class="mono">(03)</span>
+        <span class="step__name">Connect</span>
+        <span class="step__text">Community participation and ethical technology, shaped by lived experience.</span>
+      </button>
+    </div>
+    <div class="steps__nav">
+      <span class="mono" id="step-count">01 / 03</span>
+      <button class="roll roll--sm" id="step-next">
+        <span class="roll__text"><span>Next step</span><span aria-hidden="true">Next step</span></span>
+        <span class="roll__icon" aria-hidden="true"><span>→</span></span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Evidence -->
+<section id="evidence" class="sec reveal" style="padding-top:0">
+  <div class="container">
+    <div class="sec__head grid"><span class="pill mono">2024–25 impact</span><span class="mono idx" data-decode>(04)</span></div>
+    <h2 class="display">
+      <span class="line"><span style="--i:0">Real people.</span></span>
+      <span class="line"><span style="--i:1"><i>Real connection.</i></span></span>
+    </h2>
+    <div class="stats grid">
+      <div class="stat fade" style="--i:0"><span class="mono"><span>(001)</span><span>Engaged</span></span><span class="stat__num" data-count="1729">1,729</span><p class="stat__label">people engaged with activities, resources and events</p></div>
+      <div class="stat fade" style="--i:1"><span class="mono"><span>(002)</span><span>Network</span></span><span class="stat__num" data-count="789">789</span><p class="stat__label">network members</p></div>
+      <div class="stat fade" style="--i:2"><span class="mono"><span>(003)</span><span>Reach</span></span><span class="stat__num" data-count="50" data-suffix="+">50+</span><p class="stat__label">countries represented</p></div>
+    </div>
+    <p class="mono source">Source: IRPH Impact Report 2024–25, pp. 3 and 10.</p>
+  </div>
+</section>
+
+<!-- 6. What IRPH does -->
+<section id="programmes" class="sec sec--dark reveal">
+  <div class="container">
+    <div class="sec__head grid"><span class="pill mono pill--light">What we do</span><span class="mono idx" data-decode>(05)</span></div>
+    <h2 class="prog__title fade"><span class="glyph">↪</span> Intercultural Roots for Public Health — four ways in.</h2>
+    <ul class="prog__list">
+      <li class="grid fade" style="--i:0"><span class="mono">(001)</span><span class="name">Creative health</span></li>
+      <li class="grid fade" style="--i:1"><span class="mono">(002)</span><span class="name">Arts Disability Network</span></li>
+      <li class="grid fade" style="--i:2"><span class="mono">(003)</span><span class="name">EcoGPX®</span></li>
+      <li class="grid fade" style="--i:3"><span class="mono">(004)</span><span class="name">Forum Theatre</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 7. The ask -->
+<section id="ask" class="sec reveal">
+  <div class="container">
+    <div class="sec__head grid"><span class="pill mono">The ask</span><span class="mono idx" data-decode>(06)</span></div>
+    <h2 class="display">
+      <span class="line"><span style="--i:0">What would you</span></span>
+      <span class="line"><span style="--i:1"><i>help grow?</i></span></span>
+    </h2>
+    <div class="choices mono" role="group" aria-label="Choose a programme">
+      <button class="choice" aria-pressed="false" data-name="creative health">Creative health</button>
+      <button class="choice" aria-pressed="false" data-name="the Arts Disability Network">Arts Disability Network</button>
+      <button class="choice" aria-pressed="false" data-name="EcoGPX®">EcoGPX®</button>
+      <button class="choice" aria-pressed="false" data-name="Forum Theatre">Forum Theatre</button>
+    </div>
+    <p class="ask__msg" id="ask-msg" aria-live="polite">Help Intercultural Roots <i>reach more people.</i></p>
+    <div class="ask__foot">
+      <a class="roll roll--paper" href="https://interculturalroots.org/make-a-donation" target="_blank" rel="noopener">
+        <span class="roll__text"><span>Donate</span><span aria-hidden="true">Donate</span></span>
+        <span class="roll__icon" aria-hidden="true"><span>↗</span></span>
+      </a>
+      <p>Donate. Be part of what grows next.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Footer -->
+<footer>
+  <div class="container">
+    <div class="foot__cols grid">
+      <div class="foot__col">
+        <h3 class="mono">(Photo credits)</h3>
+        <ul>
+          <li>Boal Forum Theatre, 2024. Image: Intercultural Roots.</li>
+          <li>EcoGPX Coventry, 2024. Image: Intercultural Roots.</li>
+          <li>EcoGPX Coventry, 2024. Photo: Kopal Gupta.</li>
+          <li>Bridging Cultures, Coventry, 2025. Image: Intercultural Roots.</li>
+        </ul>
+      </div>
+      <div class="foot__col">
+        <h3 class="mono">(Sources)</h3>
+        <p>IRPH Impact Report 2024–25, pp. 3 and 10.</p>
+      </div>
+      <div class="foot__col">
+        <h3 class="mono">(About this page)</h3>
+        <p>The 3D garden is an imagined space generated with MANI Engine. Built with AI assistance — see workflow doc.</p>
+      </div>
+      <div class="foot__col">
+        <h3 class="mono">(Charity)</h3>
+        <p>Intercultural Roots for Public Health. Registered Charity No. 1179885.</p>
+      </div>
+    </div>
+    <p class="wordmark" aria-hidden="true">Intercultural <i>Roots</i></p>
+    <div class="foot__base mono"><span>CapCut × EAST2046 — Cambridge</span><span>Press G for the grid</span><a href="#hero">Back to top ↑</a></div>
+  </div>
+</footer>
+
+<div class="grid-overlay container grid" id="grid-overlay" aria-hidden="true">
+  <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+</div>
+
+<script>
+  /* Fog hero. Draws a fog texture on a canvas, erases it with a soft brush that trails the
+     pointer (no click needed), tracks % cleared on a coarse grid, and dissolves at THRESHOLD. */
+  (() => {
+    const THRESHOLD = 0.45;
+    const hero = document.getElementById('hero');
+    const canvas = document.getElementById('fog');
+    const ctx = canvas.getContext('2d');
+    const cursor = document.getElementById('fog-cursor');
+    const fill = document.getElementById('fog-fill');
+    const pct = document.getElementById('fog-pct');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Sized once. Later resizes just stretch it (CSS 100%), so phone toolbars don't wipe progress.
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    const W = canvas.width = Math.round(innerWidth * dpr);
+    const H = canvas.height = Math.round(innerHeight * dpr);
+    const brush = Math.max(84, Math.min(innerWidth, innerHeight) * 0.165); // CSS px
+
+    // --- Paint the fog: dark base, layered soft blobs, then fine noise ---
+    let seed = 7;
+    const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    ctx.fillStyle = '#1d201e';
+    ctx.fillRect(0, 0, W, H);
+    for (let i = 0; i < 160; i++) {
+      const x = rand() * W, y = rand() * H, r = (0.08 + rand() * 0.3) * Math.max(W, H);
+      const shade = 40 + Math.floor(rand() * 60);
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, `rgba(${shade},${shade + 3},${shade + 1},${0.08 + rand() * 0.12})`);
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    }
+    const noise = ctx.getImageData(0, 0, W, H), d = noise.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const n = (Math.random() - 0.5) * 14;
+      d[i] += n; d[i + 1] += n; d[i + 2] += n;
+    }
+    ctx.putImageData(noise, 0, 0);
+
+    // --- Coverage grid for % cleared (cheaper than reading pixels back) ---
+    const COLS = 64, ROWS = 36, grid = new Uint8Array(COLS * ROWS);
+    let clearedCells = 0, done = false;
+
+    function erase(x, y) { // x, y in CSS px
+      const sx = W / innerWidth, sy = H / innerHeight;
+      const cx = x * sx, cy = y * sy, r = brush * sx;
+      ctx.globalCompositeOperation = 'destination-out';
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+      g.addColorStop(0, 'rgba(0,0,0,.9)');
+      g.addColorStop(.55, 'rgba(0,0,0,.45)');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+
+      // Mark grid cells inside the solid part of the brush
+      const cw = innerWidth / COLS, ch = innerHeight / ROWS, rr = brush * 0.6;
+      const c0 = Math.max(0, Math.floor((x - rr) / cw)), c1 = Math.min(COLS - 1, Math.floor((x + rr) / cw));
+      const r0 = Math.max(0, Math.floor((y - rr) / ch)), r1 = Math.min(ROWS - 1, Math.floor((y + rr) / ch));
+      for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) {
+        const k = r * COLS + c;
+        if (grid[k]) continue;
+        const dx = (c + .5) * cw - x, dy = (r + .5) * ch - y;
+        if (dx * dx + dy * dy < rr * rr) { grid[k] = 1; clearedCells++; }
+      }
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const p = Math.min(1, clearedCells / (COLS * ROWS) / THRESHOLD);
+      fill.style.transform = `scaleX(${p})`;
+      pct.textContent = String(Math.round(p * 100)).padStart(3, '0') + '%';
+      if (p >= 1) dissolve();
+    }
+
+    function dissolve() {
+      if (done) return;
+      done = true;
+      hero.classList.add('cleared');
+      document.dispatchEvent(new CustomEvent('fog:cleared')); // world.js can start preloading here
+      setTimeout(() => document.getElementById('fog-after').classList.add('in'), reduced ? 0 : 900);
+      setTimeout(() => document.getElementById('fog-next').classList.add('in'), reduced ? 0 : 2400) // keep in step with CUE_AT;
+    }
+
+    // --- Pointer: no click needed — just moving over the hero wipes the fog.
+    //     The brush trails a smoothed position so strokes feel like a soft cloth. ---
+    let active = false, tx = 0, ty = 0, bx = 0, by = 0, cx = innerWidth / 2, cy = innerHeight / 2;
+    const pos = e => [e.clientX, e.clientY];
+
+    hero.addEventListener('pointermove', e => {
+      [tx, ty] = pos(e);
+      if (!active) { active = true; bx = tx; by = ty; cx = tx; cy = ty; } // start fresh, no streak from the last exit point
+      cursor.classList.add('on');
+    });
+    hero.addEventListener('pointerleave', () => { active = false; cursor.classList.remove('on'); });
+    hero.addEventListener('pointercancel', () => (active = false));
+
+    const size = brush * 1.2;
+    cursor.style.width = cursor.style.height = size + 'px';
+    function tick() {
+      if (active && !done && Math.hypot(tx - bx, ty - by) > 0.5) {
+        // Step along the gap so fast flicks leave a continuous stroke
+        const nx = bx + (tx - bx) * 0.35, ny = by + (ty - by) * 0.35;
+        const dist = Math.hypot(nx - bx, ny - by), steps = Math.max(1, Math.ceil(dist / (brush * 0.25)));
+        for (let i = 1; i <= steps; i++) erase(bx + (nx - bx) * i / steps, by + (ny - by) * i / steps);
+        bx = nx; by = ny;
+      }
+      cx += (tx - cx) * 0.2; cy += (ty - cy) * 0.2;
+      cursor.style.transform = `translate(${cx - size / 2}px, ${cy - size / 2}px)`;
+      if (!done || cursor.classList.contains('on')) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    // --- "Clear it for me": sweep a zigzag across the screen, then dissolve ---
+    document.getElementById('fog-auto').addEventListener('click', () => {
+      if (done) return;
+      if (reduced) return dissolve();
+      const pts = [], rows = 5;
+      for (let r = 0; r < rows; r++) {
+        const y = innerHeight * (0.12 + 0.76 * r / (rows - 1));
+        pts.push(r % 2 ? [innerWidth * 0.9, y] : [innerWidth * 0.1, y], r % 2 ? [innerWidth * 0.1, y] : [innerWidth * 0.9, y]);
+      }
+      let i = 0;
+      (function sweep() {
+        if (done || i >= pts.length - 1) return dissolve();
+        const [x0, y0] = pts[i], [x1, y1] = pts[i + 1];
+        for (let t = 0; t <= 1; t += 0.08) erase(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t);
+        i++;
+        setTimeout(sweep, 70);
+      })();
+    });
+
+    // --- Intro: fade the fog in, then rise the headline ---
+    requestAnimationFrame(() => {
+      hero.classList.add('ready');
+      setTimeout(() => document.getElementById('headline').classList.add('in'), reduced ? 0 : 300);
+    });
+  })();
+</script>
+<script>
+  // The MANI world is embedded directly in #walk (iframe src above) so it starts loading
+  // with the page. It sends no X-Frame-Options / frame-ancestors, so embedding is allowed.
+  const walk = document.getElementById('walk');
+  const win = document.getElementById('walk-window');
+  const sheet = document.getElementById('walk-sheet');
+  const world = document.getElementById('world');
+
+  // Keep the world invisible until it has loaded, so the visitor never sees a blank frame.
+  // Any later load means the world navigated itself somewhere (e.g. an old-style portal link):
+  // treat that as the walk ending and bring the visitor back, so no return link is needed.
+  let worldLoads = 0;
+  world.addEventListener('load', () => {
+    worldLoads++;
+    if (worldLoads === 1) world.classList.add('loaded');
+    else returnToSite();
+  });
+
+  // Scroll progress through the first screen of #walk: 0 = section just arrived, 1 = full screen
+  let immersed = false;
+  function onScroll() {
+    const top = walk.getBoundingClientRect().top;
+    const p = Math.min(1, Math.max(0, 1 - top / window.innerHeight));
+    win.style.setProperty('--p', p.toFixed(3));
+    sheet.style.setProperty('--o', Math.max(0, 1 - Math.max(0, p - 0.55) * 2.6).toFixed(3));
+
+    const nowImmersed = p >= 1 && walk.getBoundingClientRect().bottom > window.innerHeight;
+    if (nowImmersed !== immersed) {
+      immersed = nowImmersed;
+      walk.classList.toggle('immersed', immersed);
+      // Hand keyboard focus to the world so arrow keys / WASD walk instead of scrolling the page
+      if (immersed) world.focus(); else if (document.activeElement === world) world.blur();
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+
+  // After the fog clears: show the quote, then carry the visitor straight into the world.
+  // The veil holds the same frame on screen while we jump to #walk, then fades to the live world.
+  const ENTER_AFTER = 8000;   // ms from fog cleared to entering (quote reading time)
+  const CUE_AT = 2400;        // ms from fog cleared to showing the "Next" row + countdown
+  const hero = document.getElementById('hero');
+  const veil = document.getElementById('enter-veil');
+  let entered = false, enterTimer = null;
+
+  function enterWorld() {
+    if (entered) return;
+    entered = true;
+    clearTimeout(enterTimer);
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    hero.classList.add('entering');
+    setTimeout(() => {
+      veil.classList.add('on');
+      window.scrollTo({ top: walk.offsetTop, behavior: 'instant' });
+      onScroll(); // marks #walk immersed and focuses the world
+      const reveal = () => setTimeout(() => veil.classList.remove('on'), 150);
+      if (world.classList.contains('loaded')) reveal();
+      else {
+        world.addEventListener('load', reveal, { once: true });
+        setTimeout(reveal, 10000); // never hold the veil forever on slow Wi-Fi
+      }
+    }, reduced ? 0 : 1100);
+  }
+
+  document.addEventListener('fog:cleared', () => {
+    hero.style.setProperty('--enter-ms', (ENTER_AFTER - CUE_AT) + 'ms');
+    enterTimer = setTimeout(enterWorld, ENTER_AFTER);
+  });
+  document.getElementById('enter-now').addEventListener('click', enterWorld);
+  document.getElementById('skip-walk').addEventListener('click', () => { entered = true; clearTimeout(enterTimer); });
+  // If the visitor scrolls away on their own before the hand-off, don't yank them back
+  window.addEventListener('scroll', () => { if (!entered && scrollY > innerHeight * 0.5) { entered = true; clearTimeout(enterTimer); } }, { passive: true });
+
+  // Walk finished → back to the page. Fades to dark, jumps to #real, then reveals it.
+  // The world is reset afterwards so it's ready again if the visitor scrolls back up.
+  let returning = false;
+  function returnToSite() {
+    if (returning) return;
+    returning = true;
+    entered = true; clearTimeout(enterTimer);
+    veil.classList.add('on', 'solid');
+    world.blur();
+    setTimeout(() => {
+      document.getElementById('real').scrollIntoView({ behavior: 'instant' });
+      onScroll();
+      setTimeout(() => {
+        veil.classList.remove('on');
+        setTimeout(() => veil.classList.remove('solid'), 1200);
+        worldLoads = 0; world.classList.remove('loaded'); world.src = world.src; // reload the world fresh for another walk
+        returning = false;
+      }, 200);
+    }, 600);
+  }
+
+  // Preferred signal: the MANI world posts { type: 'irph:returned' } to its parent when the
+  // walk ends (portal reached or its own "Skip the walk"). Only trusted from our iframe or ourselves.
+  window.addEventListener('message', e => {
+    // MANI serves worlds with a CSP sandbox, so their origin is opaque ("null") — trust the
+    // message by its source window (our iframe) instead of its origin
+    const fromWorld = e.source === world.contentWindow || e.source === window;
+    const type = e.data && (e.data.type || e.data);
+    if (fromWorld && type === 'irph:returned') returnToSite();
+  });
+
+  // Legacy: if a portal ever links to OUR_URL/#returned, the iframe loads this page —
+  // that copy just signals the parent and stops.
+  if (location.hash === '#returned') {
+    if (window.top !== window.self) {
+      world.remove(); // this copy only exists to signal the parent — don't load the world again inside itself
+      window.parent.postMessage({ type: 'irph:returned' }, '*');
+    } else {
+      document.getElementById('real').scrollIntoView();
+    }
+  }
+
+</script>
+<script>
+  /* Story sections: scroll reveals, decoding mono labels, counters, steps, the ask, grid overlay */
+  (() => {
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Labels "decode": characters scramble, then settle left to right
+    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789/()<>';
+    function decode(el) {
+      if (reduced || el.dataset.decoded) return;
+      el.dataset.decoded = '1';
+      const final = el.textContent;
+      let frame = 0;
+      const total = 18;
+      (function step() {
+        el.textContent = [...final].map((ch, i) =>
+          ch === ' ' || i < (frame / total) * final.length ? ch : CHARS[Math.floor(Math.random() * CHARS.length)]).join('');
+        if (++frame <= total) setTimeout(step, 35); else el.textContent = final;
+      })();
+    }
+
+    // Count up from 0; the final value is already in the HTML for no-JS / reduced motion
+    function count(el) {
+      if (reduced || el.dataset.counted) return;
+      el.dataset.counted = '1';
+      const to = +el.dataset.count, suffix = el.dataset.suffix || '', t0 = performance.now(), dur = 1600;
+      (function step(t) {
+        const k = Math.min(1, (t - t0) / dur), v = Math.round(to * (1 - Math.pow(1 - k, 4)));
+        el.textContent = v.toLocaleString('en-GB') + suffix;
+        if (k < 1) requestAnimationFrame(step);
+      })(t0);
+    }
+
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('in');
+      e.target.querySelectorAll('[data-decode]').forEach(decode);
+      e.target.querySelectorAll('[data-count]').forEach(count);
+    }), { threshold: 0.15 });
+    document.querySelectorAll('.reveal, .reveal .line, .reveal .fade, .stats').forEach(el => io.observe(el));
+    document.querySelectorAll('#hero [data-decode]').forEach(el => setTimeout(() => decode(el), 500));
+
+    // How change happens: one step at a time, the root line grows with each
+    const steps = [...document.querySelectorAll('#steps .step')];
+    const stepsEl = document.getElementById('steps'), countEl = document.getElementById('step-count');
+    let current = 0;
+    function show(i) {
+      current = i;
+      steps.forEach((s, j) => { s.setAttribute('aria-selected', j === i); s.classList.toggle('seen', j < i); });
+      stepsEl.style.setProperty('--root', (i + 1) / steps.length);
+      countEl.textContent = `0${i + 1} / 0${steps.length}`;
+    }
+    steps.forEach((s, i) => s.addEventListener('click', () => show(i)));
+    document.getElementById('step-next').addEventListener('click', () => show((current + 1) % steps.length));
+
+    // The ask: picking a programme updates the message (it doesn't earmark the donation)
+    const msg = document.getElementById('ask-msg');
+    document.querySelectorAll('.choice').forEach(btn => btn.addEventListener('click', () => {
+      document.querySelectorAll('.choice').forEach(b => b.setAttribute('aria-pressed', b === btn));
+      msg.innerHTML = `Help more people find programmes like <i>${btn.dataset.name}.</i>`;
+    }));
+
+    // Press G to toggle the 12-column design grid
+    const overlay = document.getElementById('grid-overlay');
+    addEventListener('keydown', e => {
+      if (e.key.toLowerCase() === 'g' && !e.metaKey && !e.ctrlKey && !/INPUT|TEXTAREA/.test(document.activeElement.tagName)) overlay.classList.toggle('on');
+    });
+  })();
+</script>
 </body>
 </html>
