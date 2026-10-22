@@ -5,36 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Clear the Dark — Intercultural Roots</title>
   <meta name="description" content="Clear the dark spot, walk into the garden, and meet the people of Intercultural Roots for Public Health.">
+  <script>document.documentElement.classList.add("js");</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/styles.css">
   <!-- Dev shell. build.py inlines everything below into dist/index.html for submission. -->
 </head>
 <body>
   <a class="skip-link" href="#real">Skip to the story</a>
 
+  <!-- Motion chrome (motion.js). Hidden without JS. -->
+  <div class="preloader" aria-hidden="true">
+    <div class="preloader__row">
+      <span class="mono">Intercultural Roots</span>
+      <span class="mono">Clearing the dark</span>
+    </div>
+    <div class="preloader__count"><span class="preloader__num">000</span><span class="preloader__pct">%</span></div>
+    <div class="preloader__bar"><span></span></div>
+  </div>
+  <div class="cursor" aria-hidden="true"><div class="cursor__ring"><span class="cursor__label"></span></div><div class="cursor__dot"></div></div>
+  <div class="progress" aria-hidden="true"><span></span></div>
+
+  <header class="site-header">
+    <a class="site-header__brand" href="#hero"><span class="site-header__mark" aria-hidden="true"></span><span data-copy="site.name">Intercultural Roots</span></a>
+    <nav class="site-header__nav" aria-label="Sections">
+      <a href="#change" class="site-header__link"><span class="mono">01</span> Change</a>
+      <a href="#evidence" class="site-header__link"><span class="mono">02</span> Impact</a>
+      <a href="#programmes" class="site-header__link"><span class="mono">03</span> Programmes</a>
+    </nav>
+    <a class="btn btn--primary btn--sm magnetic" href="https://interculturalroots.org/make-a-donation" data-href="links.donate">
+      <span class="btn__roll" data-label="Donate"><span>Donate</span></span>
+    </a>
+  </header>
+
   <main>
-    <!-- 1. Fog hero (ZJ, hero.js). Without JS: image, quote and buttons show, no fog. -->
-    <section id="hero" class="hero" aria-labelledby="hero-title">
+    <!-- 1. Fog hero (hero.js). Without JS: image, quote and buttons show, no fog. -->
+    <section id="hero" class="hero" data-theme="dark" aria-labelledby="hero-title">
       <img class="hero__img" src="assets/spawn-placeholder.svg"
            alt="A grey, misty street with a path leading towards a golden garden in the distance."
            data-src="hero.image" data-alt="hero.imageAlt">
-      <canvas class="hero__fog" aria-hidden="true"></canvas>
+      <canvas class="hero__fog" aria-hidden="true" data-cursor="Drag"></canvas>
 
       <div class="hero__prompt" aria-live="polite">
-        <h1 id="hero-title" class="hero__title" data-copy="hero.prompt">Click and drag to clear the dark spot.</h1>
-        <button type="button" class="btn btn--ghost hero__auto" data-copy="hero.clearForMe">Clear it for me</button>
+        <h1 id="hero-title" class="hero__title split" data-copy="hero.prompt">Click and drag to clear the dark spot.</h1>
+        <button type="button" class="btn btn--ghost hero__auto magnetic"><span class="btn__roll" data-label="Clear it for me"><span data-copy="hero.clearForMe">Clear it for me</span></span></button>
       </div>
 
       <div class="hero__band">
         <figure class="hero__quote" tabindex="-1">
-          <blockquote data-copy="hero.quote">“EcoGPX® helped me get out of a dark spot I was in. It allowed me to reconnect with myself, with others and with the world around me and nature.”</blockquote>
-          <figcaption data-copy="hero.quoteBy">Participant, EcoGPX Coventry Launchpad</figcaption>
+          <blockquote class="split" data-copy="hero.quote">“EcoGPX® helped me get out of a dark spot I was in. It allowed me to reconnect with myself, with others and with the world around me and nature.”</blockquote>
+          <figcaption class="mono" data-copy="hero.quoteBy">Participant, EcoGPX Coventry Launchpad</figcaption>
         </figure>
         <div class="hero__actions">
-          <a class="btn btn--primary hero__walk" href="#walk" data-href="links.maniWorld" data-copy="hero.walk">Walk out of the dark spot →</a>
-          <a class="hero__skip" href="#real" data-copy="hero.skip">Skip the walk</a>
+          <a class="btn btn--primary hero__walk magnetic" href="#walk" data-href="links.maniWorld"><span class="btn__roll" data-label="Walk out of the dark spot →"><span data-copy="hero.walk">Walk out of the dark spot →</span></span></a>
+          <a class="hero__skip link-line" href="#real" data-copy="hero.skip">Skip the walk</a>
         </div>
       </div>
     </section>
@@ -42,42 +67,208 @@
     <!-- 2. MANI walk overlay (Jack, world.js) -->
     <section id="walk" class="walk" hidden></section>
 
-    <!-- 3. Portal → real people (ZJ layout, Jack wires #returned) -->
-    <section id="real" class="section section--dark">
-      <div class="wrap"><p class="placeholder">Section 3 — real-photo moment (Z3)</p></div>
+    <!-- 3. Portal → real people -->
+    <section id="real" class="section real" data-theme="dark" tabindex="-1" aria-labelledby="real-title">
+      <div class="wrap">
+        <p class="eyebrow mono"><span class="eyebrow__idx">(001)</span> Why we exist</p>
+        <p class="statement statement--muted split" data-copy="real.imagined">That garden was imagined.</p>
+        <h2 id="real-title" class="statement split" data-copy="real.real">These people are real.</h2>
+      </div>
+      <figure class="real__photo media" data-parallax="0.12">
+        <div class="media__clip"><img src="assets/ecogpx-coventry-group-2024.jpg" alt="" data-src="real.photo" data-alt="real.photoAlt" loading="lazy"></div>
+        <figcaption class="mono credit" data-copy="real.photoCredit">EcoGPX Coventry, 2024. Image: Intercultural Roots.</figcaption>
+      </figure>
+      <div class="wrap real__text">
+        <h3 class="statement statement--md split"><span>Creativity</span> <span class="arrow" aria-hidden="true">↪</span> <span>reconnects us.</span></h3>
+        <p class="lede fade-up" data-copy="real.body">Loneliness, inequality and disconnection affect how we live. We bring artists, practitioners and communities together to improve wellbeing, strengthen belonging and reconnect people with nature and place.</p>
+      </div>
     </section>
 
-    <!-- 4. How change happens (ZJ, Z3) -->
-    <section id="change" class="section">
-      <div class="wrap"><p class="placeholder">Section 4 — Listen / Create Together / Connect (Z3)</p></div>
+    <!-- 4. How change happens (tap-through) -->
+    <section id="change" class="section change" data-theme="light" aria-labelledby="change-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow mono"><span class="eyebrow__idx">(002)</span> <span id="change-title" data-copy="change.label">How change happens</span></p>
+          <p class="mono change__counter" aria-hidden="true"><span class="change__current">01</span> / 03</p>
+        </div>
+
+        <div class="change__grid">
+          <div class="change__copy">
+            <ol class="change__tabs">
+              <li><button type="button" class="change__tab pill" data-step="0" aria-current="step"><span class="mono">01</span> <span data-copy="change.steps.0.title">Listen</span></button></li>
+              <li><button type="button" class="change__tab pill" data-step="1"><span class="mono">02</span> <span data-copy="change.steps.1.title">Create Together</span></button></li>
+              <li><button type="button" class="change__tab pill" data-step="2"><span class="mono">03</span> <span data-copy="change.steps.2.title">Connect</span></button></li>
+            </ol>
+
+            <div class="change__panels" aria-live="polite">
+              <article class="change__panel is-active" data-step="0">
+                <h3 class="change__title"><span class="mono change__num">01</span><span data-copy="change.steps.0.title">Listen</span></h3>
+                <p class="change__text" data-copy="change.steps.0.text">Start with “What Matters to You?”</p>
+              </article>
+              <article class="change__panel" data-step="1">
+                <h3 class="change__title"><span class="mono change__num">02</span><span data-copy="change.steps.1.title">Create Together</span></h3>
+                <p class="change__text" data-copy="change.steps.1.text">Arts, movement, storytelling and cultural exchange.</p>
+              </article>
+              <article class="change__panel" data-step="2">
+                <h3 class="change__title"><span class="mono change__num">03</span><span data-copy="change.steps.2.title">Connect</span></h3>
+                <p class="change__text" data-copy="change.steps.2.text">Community participation and ethical technology, shaped by lived experience.</p>
+              </article>
+            </div>
+
+            <button type="button" class="btn btn--dark change__next magnetic"><span class="btn__roll" data-label="Next step →"><span>Next step →</span></span></button>
+          </div>
+
+          <div class="change__media">
+            <figure class="change__figure is-active" data-step="0">
+              <div class="media__clip"><img src="assets/bridging-cultures-2025.jpg" alt="A facilitator speaks to a circle of participants standing in a bright studio." data-src="change.steps.0.image" data-alt="change.steps.0.alt" loading="lazy"></div>
+              <figcaption class="mono credit" data-copy="change.steps.0.credit">Bridging Cultures, Coventry, 2025. Image: Intercultural Roots.</figcaption>
+            </figure>
+            <figure class="change__figure" data-step="1">
+              <div class="media__clip"><img src="assets/forum-theatre-2024.jpg" alt="A man in a blue scarf raises his arms in a forum theatre session, with a group moving behind him." data-src="change.steps.1.image" data-alt="change.steps.1.alt" loading="lazy"></div>
+              <figcaption class="mono credit" data-copy="change.steps.1.credit">Boal Forum Theatre, 2024. Image: Intercultural Roots.</figcaption>
+            </figure>
+            <figure class="change__figure" data-step="2">
+              <div class="media__clip"><img src="assets/ecogpx-coventry-hearts-2024.jpg" alt="Three people smile in a sunny garden, holding up heart shapes woven from willow." data-src="change.steps.2.image" data-alt="change.steps.2.alt" loading="lazy"></div>
+              <figcaption class="mono credit" data-copy="change.steps.2.credit">EcoGPX Coventry, 2024. Photo: Kopal Gupta.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+        <div class="root" aria-hidden="true">
+          <svg class="root__svg" viewBox="0 0 1000 60" preserveAspectRatio="none">
+            <path class="root__bg" d="M0,30 C120,8 260,52 500,30 S860,8 1000,30" pathLength="1"/>
+            <path class="root__grow" d="M0,30 C120,8 260,52 500,30 S860,8 1000,30" pathLength="1"/>
+          </svg>
+          <span class="root__node is-on" style="left:0%"></span>
+          <span class="root__node" style="left:50%"></span>
+          <span class="root__node" style="left:100%"></span>
+        </div>
+      </div>
     </section>
 
-    <!-- 5. Evidence (ZJ, Z4) -->
-    <section id="evidence" class="section">
-      <div class="wrap"><p class="placeholder">Section 5 — counters (Z4)</p></div>
+    <!-- 5. Evidence -->
+    <section id="evidence" class="section evidence" data-theme="light" aria-labelledby="evidence-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow mono"><span class="eyebrow__idx">(003)</span> <span data-copy="evidence.label">2024–25 impact</span></p>
+        </div>
+        <h2 id="evidence-title" class="statement split" data-copy="evidence.heading">Real people. Real connection.</h2>
+
+        <ul class="stats">
+          <li class="stat fade-up">
+            <span class="stat__num" data-count="evidence.stats.0">1,729</span>
+            <span class="stat__label" data-copy="evidence.stats.0.label">people engaged with activities, resources and events</span>
+          </li>
+          <li class="stat fade-up">
+            <span class="stat__num" data-count="evidence.stats.1">789</span>
+            <span class="stat__label" data-copy="evidence.stats.1.label">network members</span>
+          </li>
+          <li class="stat fade-up">
+            <span class="stat__num" data-count="evidence.stats.2">50+</span>
+            <span class="stat__label" data-copy="evidence.stats.2.label">countries represented</span>
+          </li>
+        </ul>
+
+        <dl class="spec fade-up">
+          <div class="spec__row"><dt class="mono">Source</dt><dd>IRPH Impact Report 2024–25</dd></div>
+          <div class="spec__row"><dt class="mono">Pages</dt><dd>3 and 10</dd></div>
+          <div class="spec__row"><dt class="mono">Period</dt><dd>2024–25</dd></div>
+        </dl>
+      </div>
     </section>
 
-    <!-- 6. What IRPH does (ZJ, Z4) -->
-    <section id="programmes" class="section">
-      <div class="wrap"><p class="placeholder">Section 6 — programmes (Z4)</p></div>
+    <!-- 6. What IRPH does -->
+    <section id="programmes" class="section programmes" data-theme="dark" aria-labelledby="programmes-title">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow mono"><span class="eyebrow__idx">(004)</span> <span id="programmes-title" data-copy="programmes.label">What we do</span></p>
+        </div>
+        <ol class="index-list">
+          <li class="index-list__item fade-up"><span class="mono index-list__idx">(001)</span><span class="index-list__text" data-copy="programmes.items.0">Creative health</span><span class="index-list__arrow" aria-hidden="true">↪</span></li>
+          <li class="index-list__item fade-up"><span class="mono index-list__idx">(002)</span><span class="index-list__text" data-copy="programmes.items.1">Arts Disability Network</span><span class="index-list__arrow" aria-hidden="true">↪</span></li>
+          <li class="index-list__item fade-up"><span class="mono index-list__idx">(003)</span><span class="index-list__text" data-copy="programmes.items.2">EcoGPX®</span><span class="index-list__arrow" aria-hidden="true">↪</span></li>
+          <li class="index-list__item fade-up"><span class="mono index-list__idx">(004)</span><span class="index-list__text" data-copy="programmes.items.3">Forum Theatre</span><span class="index-list__arrow" aria-hidden="true">↪</span></li>
+        </ol>
+      </div>
+      <div class="marquee" aria-hidden="true"><div class="marquee__track"></div></div>
     </section>
 
-    <!-- 7. The ask (ZJ, Z5) -->
-    <section id="ask" class="section section--dark">
-      <div class="wrap"><p class="placeholder">Section 7 — donation ask (Z5)</p></div>
+    <!-- 7. The ask -->
+    <section id="ask" class="ask" data-theme="green" aria-labelledby="ask-title">
+      <div class="wrap ask__inner">
+        <p class="eyebrow mono"><span class="eyebrow__idx">(005)</span> Be part of it</p>
+        <h2 id="ask-title" class="statement split" data-copy="ask.question">What would you help grow?</h2>
+
+        <div class="ask__choices" role="group" aria-labelledby="ask-title">
+          <button type="button" class="pill pill--choice" aria-pressed="false" data-copy="programmes.items.0">Creative health</button>
+          <button type="button" class="pill pill--choice" aria-pressed="false" data-copy="programmes.items.1">Arts Disability Network</button>
+          <button type="button" class="pill pill--choice" aria-pressed="false" data-copy="programmes.items.2">EcoGPX®</button>
+          <button type="button" class="pill pill--choice" aria-pressed="false" data-copy="programmes.items.3">Forum Theatre</button>
+        </div>
+        <p class="ask__message" aria-live="polite"></p>
+
+        <div class="ask__card">
+          <div>
+            <p class="ask__line1" data-copy="ask.line1">Help Intercultural Roots reach more people.</p>
+            <p class="ask__line2" data-copy="ask.line2">Donate. Be part of what grows next.</p>
+            <p class="mono ask__url" data-copy="ask.urlText">interculturalroots.org/make-a-donation</p>
+          </div>
+          <a class="btn btn--primary btn--xl magnetic" href="https://interculturalroots.org/make-a-donation" data-href="links.donate">
+            <span class="btn__roll" data-label="Donate →"><span>Donate →</span></span>
+          </a>
+        </div>
+
+        <svg class="ask__sprout" viewBox="0 0 200 300" aria-hidden="true">
+          <path class="ask__stem" d="M100,300 C100,240 96,200 100,150 C104,110 100,80 100,40" pathLength="1"/>
+          <path class="ask__leaf ask__leaf--1" d="M100,190 C70,180 50,160 46,130 C76,134 96,154 100,190 Z"/>
+          <path class="ask__leaf ask__leaf--2" d="M100,130 C130,120 150,100 154,70 C124,74 104,94 100,130 Z"/>
+          <path class="ask__leaf ask__leaf--3" d="M100,70 C84,60 76,44 78,24 C94,30 102,46 100,70 Z"/>
+        </svg>
+      </div>
     </section>
   </main>
 
-  <footer class="footer">
+  <footer class="footer" data-theme="dark">
     <div class="wrap">
-      <p>Intercultural Roots for Public Health · Registered Charity No. 1179885</p>
-      <p class="placeholder">Credits, sources and AI note (Z2)</p>
+      <div class="footer__top">
+        <img class="footer__logo" src="assets/irph-logo.jpg" alt="Intercultural Roots logo" data-src="site.logo" width="56" height="56">
+        <div>
+          <p class="footer__name" data-copy="site.fullName">Intercultural Roots for Public Health</p>
+          <p class="mono" data-copy="site.charity">Registered Charity No. 1179885</p>
+        </div>
+      </div>
+      <div class="footer__cols">
+        <div>
+          <p class="mono footer__label">Photo credits</p>
+          <ul class="footer__list">
+            <li>Boal Forum Theatre, 2024. Image: Intercultural Roots.</li>
+            <li>EcoGPX Coventry, 2024. Image: Intercultural Roots.</li>
+            <li>EcoGPX Coventry, 2024. Photo: Kopal Gupta.</li>
+            <li>Bridging Cultures, Coventry, 2025. Image: Intercultural Roots.</li>
+          </ul>
+        </div>
+        <div>
+          <p class="mono footer__label">Sources</p>
+          <ul class="footer__list">
+            <li data-copy="evidence.source">Source: IRPH Impact Report 2024–25, pp. 3 and 10.</li>
+            <li>Wording from the IRPH Creator Lab brief.</li>
+          </ul>
+        </div>
+        <div>
+          <p class="mono footer__label">Made with</p>
+          <ul class="footer__list">
+            <li data-copy="footer.ai">Built with AI assistance — see the workflow doc.</li>
+            <li data-copy="footer.mani">The 3D garden is an imagined space generated with MANI Engine.</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </footer>
 
   <script src="src/data.js"></script>
   <script src="src/sections.js"></script>
   <script src="src/hero.js"></script>
+  <script src="src/motion.js"></script>
   <script src="src/world.js"></script>
 </body>
 </html>

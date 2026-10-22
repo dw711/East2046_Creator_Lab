@@ -162,10 +162,10 @@ Durations are estimates. Do tasks in order within each column. ⚑ = blocks the 
 | # | Task | Est. | Done when |
 |---|---|---|---|
 | Z1 | Fog hero (`hero.js`) | 70 m | **Done** — placeholder image until Jack's spawn screenshot arrives |
-| Z2 | Page skeleton + `styles.css`: palette, fluid type, section layouts, footer with credits, all rendered from `AppData` | 40 m | All sections render from `AppData` |
-| Z3 | Section 3 real-photo moment (layout and copy; Jack wires the `#returned` trigger) + Section 4 tap-through story with growing root line | 45 m | Tap through all three steps on phone and keyboard |
-| Z4 | Section 5 counters + Section 6 programmes | 30 m | Counters show final values with reduced motion |
-| Z5 | Section 7 the ask: programme selection, message update, donation end-card | 25 m | Button opens the correct URL |
+| Z2 | Page skeleton + `styles.css` + `motion.js` | 40 m | **Done** |
+| Z3 | Section 3 real-photo moment (layout and copy; Jack wires the `#returned` trigger) + Section 4 tap-through story with growing root line | 45 m | **Done** |
+| Z4 | Section 5 counters + Section 6 programmes | 30 m | **Done** |
+| Z5 | Section 7 the ask: programme selection, message update, donation end-card | 25 m | **Done** |
 | Z6 | README sections: how IRPH updates the page, how to make the next campaign page, AI use, credits | 25 m | Sections written from the prompt log |
 
 ### Hand-offs
