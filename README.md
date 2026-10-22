@@ -17,6 +17,7 @@ Open `index.html` in a browser, or serve the folder (`python3 -m http.server`) a
 | `src/hero.js` | Fog hero | ZJ |
 | `src/world.js` | MANI overlay, portal, `#returned` | Jack |
 | `src/sections.js` | Fills copy from `AppData`; tap-through, counters, the ask | ZJ |
+| `src/orbs.js` | Connection field: 50 orbs (one per country), cursor pushes, grab and throw, links re-form | ZJ |
 | `src/motion.js` | Preloader, smooth scroll, cursor, text/image reveals, magnetic buttons, theme switching, marquee | ZJ |
 | `build.py` | Inlines everything into `dist/index.html` | Jack |
 

@@ -419,6 +419,19 @@ html:not(.js) .root { display: none; }
   .stat:nth-child(3) { transition-delay: .24s; }
 }
 
+.orbs { position: relative; margin: clamp(3rem, 8vw, 6rem) 0 0; }
+.orbs__canvas {
+  display: block; width: 100%; height: clamp(360px, 62vh, 640px);
+  border-radius: 4px; touch-action: pan-y;
+  background: radial-gradient(ellipse at 50% 45%, rgba(212, 231, 129, .28), rgba(212, 231, 129, 0) 65%);
+}
+.orbs__caption {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 2rem;
+  padding-top: 1rem; border-top: 1px solid var(--line); color: var(--muted);
+}
+.orbs__count { color: var(--accent); }
+html:not(.js) .orbs { display: none; }
+
 .spec { margin: clamp(3rem, 8vw, 6rem) 0 0; max-width: 40rem; }
 .spec__row { display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; padding: .85rem 0; border-top: 1px solid var(--line); }
 .spec__row:last-child { border-bottom: 1px solid var(--line); }

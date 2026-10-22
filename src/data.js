@@ -80,6 +80,13 @@ window.AppData = {
     source: "Source: IRPH Impact Report 2024–25, pp. 3 and 10."
   },
 
+  // The orb field in the impact section: one orb per country represented (brief p.3: 50+).
+  orbs: {
+    count: 50,
+    label: "50+ countries represented",
+    hint: "Move through them, or grab one and throw it. Watch them find each other again."
+  },
+
   programmes: {
     label: "What we do",
     items: ["Creative health", "Arts Disability Network", "EcoGPX®", "Forum Theatre"]   // brief p.2
