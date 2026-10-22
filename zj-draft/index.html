@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clear the Dark — Intercultural Roots for Public Health</title>
+<meta name="description" content="An interactive story for Intercultural Roots for Public Health: clear the dark spot, walk into a garden, meet the real people, and help it grow.">
+<meta name="theme-color" content="#1A1C1A">
+<link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+<!-- Dev: loads src/*. Submit: run `python3 build.py` → dist/index.html (one file). -->
+<a class="skip" href="#real">Skip to content</a>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#hero" data-cursor="Top">IRPH <span>/ Clear the Dark</span></a>
+  <nav aria-label="Sections">
+    <a href="#real">Story</a>
+    <a href="#evidence">Impact</a>
+    <a href="#ask">Join in</a>
+  </nav>
+  <span class="counter" id="counter" aria-hidden="true">01 / 06</span>
+  <a class="btn btn-sm mag" id="navDonate" href="https://interculturalroots.org/make-a-donation" target="_blank" rel="noopener">Donate</a>
+  <div class="bar" id="bar" aria-hidden="true"></div>
+</header>
+
+<div class="cursor" id="cursor" aria-hidden="true"><i></i><span></span></div>
+
+<main id="top">
+
+  <!-- 1. FOG HERO (interaction: drag) -->
+  <section id="hero" class="dark" aria-label="Clear the dark spot">
+    <div class="hero-bg" id="heroBg"></div>
+    <canvas id="fog" data-cursor="Drag"></canvas>
+    <div class="hero-ui">
+      <p class="kicker" data-bind="hero.kicker"></p>
+      <div class="hero-prompt" id="heroPrompt">
+        <h1 class="kinetic big" data-bind="hero.prompt"></h1>
+        <p class="pct" id="pct" aria-live="polite"></p>
+        <button class="btn ghost mag" id="clearBtn" type="button" data-bind="hero.clearBtn"></button>
+      </div>
+      <div class="hero-quote" id="heroQuote" aria-live="polite">
+        <blockquote>
+          <p data-bind="quote.text"></p>
+          <footer data-bind="quote.attribution"></footer>
+        </blockquote>
+        <div class="hero-actions" id="heroActions">
+          <button class="btn mag" id="walkBtn" type="button" data-bind="hero.walkBtn"></button>
+          <button class="link" id="skipBtn" type="button" data-bind="hero.skipBtn"></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. MANI WALK overlay (interaction: 3D walking) — controlled by world.js -->
+  <section id="walk" class="walk" hidden aria-label="Imagined garden walk">
+    <iframe id="worldFrame" title="Imagined garden walk, made with MANI Engine" allow="fullscreen; autoplay; xr-spatial-tracking; gamepad" tabindex="0"></iframe>
+    <div class="walk-cover" id="walkCover">
+      <div class="hero-bg"></div>
+      <p class="entering" id="entering">Entering…</p>
+      <a class="link" id="newTab" href="#" target="_blank" rel="noopener" hidden>Open the walk in a new tab</a>
+    </div>
+    <p class="walk-hint" id="walkHint">Click to start, then use arrow keys or WASD to walk.</p>
+    <div class="walk-ui">
+      <button class="ring mag" id="portalBtn" type="button">Step through the portal</button>
+      <button class="link" id="skipWalk" type="button">Skip the walk</button>
+    </div>
+  </section>
+
+  <!-- 3. PORTAL → REAL PEOPLE -->
+  <section id="real" class="light">
+    <div class="real-photo" id="realPhoto">
+      <figure>
+        <img id="realImg" alt="" loading="lazy">
+        <div class="ph" id="realPh"><span>Photo pending permission</span></div>
+        <figcaption id="realCredit"></figcaption>
+      </figure>
+      <p class="real-line" id="realLine" data-bind="real.line"></p>
+    </div>
+    <div class="wrap real-text">
+      <h2 class="kinetic big" data-bind="real.title"></h2>
+      <p class="lead reveal" data-bind="real.body"></p>
+    </div>
+  </section>
+
+  <!-- 4. HOW CHANGE HAPPENS (interaction: tap-through + listen) -->
+  <section id="change" class="green">
+    <div class="wrap">
+      <p class="kicker">Why we exist · What we do · How change happens</p>
+      <h2 class="kinetic big" data-bind="change.title"></h2>
+      <div class="steps" id="steps">
+        <div class="tabs" role="tablist" aria-label="How change happens" id="tabs"></div>
+        <div class="panels" id="panels"></div>
+        <div class="root" aria-hidden="true">
+          <svg viewBox="0 0 1000 60" preserveAspectRatio="none"><path id="rootPath" d="M0 40 C 120 10, 200 60, 330 30 S 560 10, 670 34 S 880 56, 1000 22" /></svg>
+          <ul class="leaves" id="leaves"></ul>
+        </div>
+        <div class="step-nav">
+          <button class="btn ghost mag" id="prevStep" type="button">← Back</button>
+          <button class="btn mag" id="nextStep" type="button">Next →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. EVIDENCE (counters on scroll) -->
+  <section id="evidence" class="dark">
+    <div class="wrap">
+      <h2 class="kinetic big" data-bind="evidence.title"></h2>
+      <div class="stats" id="stats"></div>
+      <p class="period" data-bind="evidence.period"></p>
+      <p class="source" data-bind="evidence.source"></p>
+    </div>
+  </section>
+
+  <!-- 6. WHAT IRPH DOES -->
+  <section id="programmes" class="light">
+    <div class="wrap">
+      <h2 class="kinetic big" data-bind="programmes.title"></h2>
+      <ul class="plist" id="plist"></ul>
+    </div>
+  </section>
+
+  <!-- 7. THE ASK (interaction: selection) -->
+  <section id="ask" class="green ask">
+    <div class="wrap">
+      <h2 class="kinetic" data-bind="ask.title"></h2>
+      <div class="chips" id="chips" role="group" aria-label="Programmes"></div>
+      <p class="ask-msg" id="askMsg" aria-live="polite"></p>
+      <div class="endcard">
+        <p class="end-h" data-bind="ask.heading"></p>
+        <p class="end-s" data-bind="ask.sub"></p>
+        <a class="btn big-btn mag" id="donate" href="https://interculturalroots.org/make-a-donation" target="_blank" rel="noopener" data-bind="ask.button"></a>
+        <p class="end-url" data-bind="ask.urlText"></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot dark">
+  <div class="wrap">
+    <p data-bind="footer.mani"></p>
+    <p data-bind="footer.ai"></p>
+    <ul class="credits" id="credits"></ul>
+    <details class="sources" id="sources">
+      <summary>Sources, AI use &amp; workflow</summary>
+      <div class="src-body">
+        <h3>Fact-check table</h3>
+        <div class="tw"><table id="factTable"></table></div>
+        <h3>AI use</h3>
+        <ul id="aiUse"></ul>
+        <h3>Reusable workflow</h3>
+        <ol>
+          <li>Read the brief; list the claims and the three questions to answer.</li>
+          <li>Put every word, number, link and credit in <code>src/data.js</code>.</li>
+          <li>Fact-check each claim against its source (table above).</li>
+          <li>Generate the 3D world with MANI from a written prompt; test the embed.</li>
+          <li>Build, then test: phone, keyboard, reduced motion, 3D skipped.</li>
+          <li>Run <code>build.py</code> to produce one self-contained file.</li>
+        </ol>
+      </div>
+    </details>
+    <p class="charity" data-bind="org.charity"></p>
+  </div>
+</footer>
+
+<noscript>
+  <div class="noscript">
+    <h1>Intercultural Roots for Public Health</h1>
+    <p>Real people. Real connection. 1,729 people engaged · 789 network members · 50+ countries represented (2024–25). Source: IRPH Impact Report 2024–25, pp. 3 and 10.</p>
+    <p><a href="https://interculturalroots.org/make-a-donation">Help Intercultural Roots reach more people. Donate. Be part of what grows next.</a></p>
+    <p>Registered Charity No. 1179885</p>
+  </div>
+</noscript>
+
+<script src="src/data.js"></script>
+<script src="src/hero.js"></script>
+<script src="src/sections.js"></script>
+<script src="src/world.js"></script>
+</body>
+</html>
