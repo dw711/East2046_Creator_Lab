@@ -291,6 +291,17 @@
   @media (max-width: 720px) { .step { grid-column: 1 / -1; padding: 0 0 28px; } }
   .steps__nav { margin-top: 40px; display: flex; justify-content: space-between; align-items: center; }
 
+  /* Scroll-driven: the section pins while the visitor scrolls through the three steps.
+     JS sizes the track (stage height + 2.2 screens) and sets the sticky top for tall stages. */
+  #change { padding-bottom: 0; }
+  .change__track { position: relative; }
+  .change__stick { position: sticky; top: 0; min-height: 100vh; min-height: 100svh; display: flex; align-items: center; }
+  .change__stick > .container { padding-top: 24px; padding-bottom: 24px; }
+  .steps__root::after { transition: transform .2s linear; }
+  .steps__count { display: flex; gap: 24px; align-items: baseline; }
+  .steps__hint { opacity: .45; transition: opacity .4s; }
+  .steps__hint.done { opacity: 0; }
+
   /* =========================================================
      5. Evidence
      ========================================================= */
@@ -586,6 +597,8 @@
 
 <!-- 4. How change happens -->
 <section id="change" class="sec reveal">
+  <div class="change__track">
+  <div class="change__stick">
   <div class="container">
     <div class="sec__head grid"><span class="pill mono">How change happens</span><span class="mono idx" data-decode>(03)</span></div>
     <h2 class="display">
@@ -612,12 +625,14 @@
       </button>
     </div>
     <div class="steps__nav">
-      <span class="mono" id="step-count">01 / 03</span>
+      <span class="mono steps__count"><span id="step-count">01 / 03</span><span class="steps__hint">Scroll to continue ↓</span></span>
       <button class="roll roll--sm" id="step-next">
         <span class="roll__text"><span>Next step</span><span aria-hidden="true">Next step</span></span>
         <span class="roll__icon" aria-hidden="true"><span>→</span></span>
       </button>
     </div>
+  </div>
+  </div>
   </div>
 </section>
 
@@ -1095,8 +1110,43 @@
       stepsEl.style.setProperty('--root', (i + 1) / steps.length);
       countEl.textContent = `0${i + 1} / 0${steps.length}`;
     }
-    steps.forEach((s, i) => s.addEventListener('click', () => show(i)));
-    document.getElementById('step-next').addEventListener('click', () => show((current + 1) % steps.length));
+    // Scroll-driven progression: the stage pins, and scrolling through the track moves the steps.
+    const track = document.querySelector('.change__track'), stick = document.querySelector('.change__stick');
+    const hint = document.querySelector('.steps__hint');
+    let pinTop = 0;
+    function layoutSteps() {
+      const h = stick.offsetHeight;
+      pinTop = Math.min(0, innerHeight - h);            // tall stages pin with their bottom on screen
+      stick.style.top = pinTop + 'px';
+      track.style.height = (h + innerHeight * 2.2) + 'px';
+      stepsScroll();
+    }
+    function stepsProgress() {
+      const run = track.offsetHeight - stick.offsetHeight;
+      return run > 0 ? Math.min(1, Math.max(0, (pinTop - track.getBoundingClientRect().top) / run)) : 0;
+    }
+    function stepsScroll() {
+      const p = stepsProgress(), n = steps.length;
+      const i = Math.min(n - 1, Math.floor(p * n));
+      if (i !== current) show(i);
+      stepsEl.style.setProperty('--root', ((p * (n - 1)) + 1) / n); // root grows continuously
+      hint.classList.toggle('done', i === n - 1);
+    }
+    // Scroll position at which step i is showing (middle of its stretch)
+    function scrollForStep(i) {
+      const run = track.offsetHeight - stick.offsetHeight;
+      return track.getBoundingClientRect().top + scrollY - pinTop + run * (i + 0.5) / steps.length;
+    }
+    addEventListener('scroll', stepsScroll, { passive: true });
+    addEventListener('resize', layoutSteps);
+    if (document.fonts) document.fonts.ready.then(layoutSteps);
+    layoutSteps();
+
+    steps.forEach((s, i) => s.addEventListener('click', () => scrollTo({ top: scrollForStep(i), behavior: reduced ? 'auto' : 'smooth' })));
+    document.getElementById('step-next').addEventListener('click', () => {
+      if (current < steps.length - 1) scrollTo({ top: scrollForStep(current + 1), behavior: reduced ? 'auto' : 'smooth' });
+      else document.getElementById('evidence').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
+    });
 
     // The ask: picking a programme updates the message (it doesn't earmark the donation)
     const msg = document.getElementById('ask-msg'), ask = document.getElementById('ask');
