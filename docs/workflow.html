@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<title>Clear the Dark — Workflow</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4; margin: 15mm 16mm 16mm; }
+  :root { --ink: #1A1C1A; --green: #163D32; --lime: #D4E781; --terra: #A66B50; --line: #1a1c1a26; --muted: #1a1c1a99; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 400 9.3pt/1.45 Inter, system-ui, sans-serif; color: var(--ink); }
+  h1, h2, h3 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; margin: 0; }
+  h1 { font-size: 40pt; line-height: .9; text-transform: uppercase; letter-spacing: -.01em; }
+  h1 i { text-transform: none; }
+  h2 { font-size: 20pt; line-height: 1; margin: 17pt 0 7pt; padding-top: 7pt; border-top: 1px solid var(--line); break-after: avoid; }
+  h2 .n { font: 500 8pt/1 "IBM Plex Mono", monospace; color: var(--terra); vertical-align: .55em; margin-right: 6pt; }
+  h3 { font-size: 13pt; margin: 12pt 0 4pt; break-after: avoid; }
+  p { margin: 0 0 6pt; }
+  ul, ol { margin: 0 0 6pt; padding-left: 15pt; }
+  li { margin-bottom: 2.5pt; }
+  .mono { font: 500 7.5pt/1.3 "IBM Plex Mono", monospace; text-transform: uppercase; letter-spacing: .03em; }
+  code { font: 400 8.3pt "IBM Plex Mono", monospace; background: #1a1c1a0d; padding: 0 2pt; border-radius: 2pt; }
+  pre { font: 400 8pt/1.45 "IBM Plex Mono", monospace; background: #1a1c1a0a; border-left: 2px solid var(--lime); padding: 7pt 9pt; white-space: pre-wrap; margin: 4pt 0 8pt; break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; margin: 4pt 0 8pt; font-size: 8.4pt; break-inside: auto; }
+  th { text-align: left; font: 500 7pt/1.3 "IBM Plex Mono", monospace; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--ink); padding: 4pt 6pt 4pt 0; }
+  td { vertical-align: top; border-bottom: 1px solid var(--line); padding: 4pt 6pt 4pt 0; }
+  tr { break-inside: avoid; }
+  .cover { display: grid; grid-template-columns: 1fr auto; gap: 10pt; align-items: end; padding-bottom: 12pt; border-bottom: 2px solid var(--ink); }
+  .cover .meta { text-align: right; color: var(--muted); }
+  .lede { font: 400 13pt/1.3 "Instrument Serif", Georgia, serif; margin: 12pt 0 4pt; max-width: 150mm; }
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8pt; margin: 10pt 0 0; }
+  .facts div { border-top: 1px solid var(--line); padding-top: 5pt; }
+  .facts b { display: block; font: 400 12pt/1.1 "Instrument Serif", serif; }
+  .note { background: #d4e78133; border-left: 3px solid var(--green); padding: 6pt 9pt; margin: 6pt 0 8pt; break-inside: avoid; }
+  .todo { color: var(--terra); font-weight: 600; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt; }
+  .tick li::marker { content: "✓  "; color: var(--green); }
+</style>
+</head>
+<body>
+
+<header class="cover">
+  <div>
+    <p class="mono" style="color:var(--terra)">CapCut × EAST2046 · Cambridge Creator Lab · Track 2 — Interactive Web Page</p>
+    <h1>Clear <i>the</i> dark</h1>
+  </div>
+  <div class="meta mono">Workflow &amp; sources<br>22 October 2026</div>
+</header>
+
+<p class="lede">An interactive page for Intercultural Roots for Public Health (IRPH): a visitor clears a “dark spot”, walks through an imagined 3D garden, and arrives at the real people, the evidence and the ask.</p>
+
+<div class="facts">
+  <div><span class="mono">Partner</span><b>IRPH</b><span class="mono">Charity No. 1179885</span></div>
+  <div><span class="mono">Audience</span><b>First-time visitors</b><span class="mono">especially potential donors</span></div>
+  <div><span class="mono">Deliverable</span><b>One HTML file</b><span class="mono">dist/index.html · works offline</span></div>
+  <div><span class="mono">Repository</span><b>East2046_Creator_Lab</b><span class="mono">github.com/dw711</span></div>
+</div>
+
+<h2><span class="n">01</span>What we made, and how it answers the brief</h2>
+<p>The brief asks the page to answer three questions for someone discovering IRPH for the first time, and to move them to donate. Each section of the page has one job:</p>
+<table>
+  <thead><tr><th style="width:21%">Section</th><th style="width:22%">Brief question</th><th style="width:30%">Interaction</th><th>Content source</th></tr></thead>
+  <tbody>
+    <tr><td>Fog hero</td><td>Hook</td><td>Drag (or move) to clear the fog; “Clear it for me” button</td><td>Participant quote, brief slide 3</td></tr>
+    <tr><td>MANI walk</td><td>Hook → story</td><td>First-person 3D walk (WASD / arrows), portal back to the page</td><td>Imagined space, made in MANI Engine</td></tr>
+    <tr><td>These people are real</td><td>Why do we exist?</td><td>Scroll reveal</td><td>Mission text, slide 2; EcoGPX Coventry photo, slide 2</td></tr>
+    <tr><td>How change happens</td><td>How does change happen?</td><td>Scroll-driven steps: the section pins and Listen → Create together → Connect advance as you scroll</td><td>Slide 2</td></tr>
+    <tr><td>Real people. Real connection.</td><td>Evidence</td><td>Count-up numbers with progress bars; 50 interactive orbs (push, grab, throw) for “50+ countries”</td><td>IRPH Impact Report 2024–25, pp. 3 and 10 (cited on slide 3)</td></tr>
+    <tr><td>What we do</td><td>What do we do?</td><td>Indexed list with hover; scrolling marquee</td><td>Programme names, slide 2</td></tr>
+    <tr><td>What would you help grow?</td><td>The ask</td><td>Pick a programme → message updates, a sprout grows; Donate button</td><td>Ask and URL, slide 5</td></tr>
+  </tbody>
+</table>
+<p>The page has more than the two interaction types the track requires, and it does not depend on any one of them: the 3D walk can be skipped, and the story, evidence and ask all work without it.</p>
+
+<h2><span class="n">02</span>The reusable workflow</h2>
+<ol>
+  <li><b>Read the brief and list every claim.</b> Pull out the three questions, the audience, every number, quote, credit and link. Nothing goes on the page that is not on this list.</li>
+  <li><b>Plan the page as a story, one section per question</b>, and give each section one interaction. Write down what is never cut (hook, skip-the-walk path, verified stats, donate button, this document).</li>
+  <li><b>Split the work</b> so people do not edit the same lines: one person on the 3D world and integration, others on the hero and the sections. Agree section IDs (<code>#hero</code>, <code>#walk</code>, <code>#real</code>, <code>#change</code>, <code>#evidence</code>, <code>#programmes</code>, <code>#ask</code>) first.</li>
+  <li><b>Build the 3D world in MANI Engine from a written prompt</b> (section 4). Screenshot its spawn view and use that same image under the fog, so the hand-off into the live world looks like one shot.</li>
+  <li><b>Build the page</b> as one <code>index.html</code> with CSS and JS inside. Use real HTML text (never text baked into images), animate only transform and opacity, and respect reduced-motion settings.</li>
+  <li><b>Fact-check</b> every claim against its source and record it in the table in section 5.</li>
+  <li><b>Test</b> on a laptop and a 375 px phone, by keyboard, with reduced motion, with the 3D walk skipped, and from the built file opened straight from disk.</li>
+  <li><b>Build and submit:</b> <code>python3 build.py</code> inlines the images and writes <code>dist/index.html</code> (about 610 KB), which is the file we submit.</li>
+</ol>
+
+<h3>To make the next campaign page</h3>
+<ul>
+  <li>Keep: the section structure, the build script, the fog hook, the scroll-driven steps, the counters and bars, the ask, and this document as a template.</li>
+  <li>Swap: the quote, mission text, steps, numbers, photos and credits (all in <code>index.html</code>), the MANI world URL in the <code>&lt;iframe id="world"&gt;</code>, and the spawn screenshot <code>assets/opening.jpg</code>.</li>
+  <li>Re-run steps 6–8: fact-check, test, build.</li>
+</ul>
+
+<h2><span class="n">03</span>How it is built</h2>
+<div class="two">
+  <div>
+    <ul>
+      <li><b>One page, no frameworks.</b> Plain HTML, CSS and JavaScript in <code>index.html</code>; no libraries to install.</li>
+      <li><b><code>build.py</code></b> turns every <code>assets/…</code> image into an embedded data URL and writes <code>dist/index.html</code> (to submit) and <code>dist/mani-scene.html</code> (a copy that opens links in the same tab, for hosting inside MANI).</li>
+      <li><b>Type:</b> Instrument Serif (headlines), Inter (body), IBM Plex Mono (labels), all from Google Fonts under the SIL Open Font License.</li>
+    </ul>
+  </div>
+  <div>
+    <ul>
+      <li><b>Accessibility:</b> all text is real HTML; reduced-motion users get final numbers and no animation; “Skip the walk” is a plain link that works without JavaScript; the orb field and decorative art are hidden from screen readers.</li>
+      <li><b>Offline:</b> everything but the 3D walk and the web fonts works with no connection; fonts fall back to system fonts.</li>
+    </ul>
+  </div>
+</div>
+
+<h2><span class="n">04</span>The MANI walk</h2>
+<p>The world is a MANI Engine project, embedded in the page with an <code>&lt;iframe&gt;</code> that starts loading as soon as the page opens. Visitors enter it automatically about 8 seconds after the fog clears, by pressing “Enter now”, or by scrolling down; a full-screen copy of the spawn view covers the jump so it looks continuous.</p>
+<p><b>Getting back out.</b> The world’s exit function sends <code>{ type: 'irph:returned' }</code> to our page when the visitor reaches the portal, the “Skip ahead” ring or the world’s own skip button. Our page trusts that message by its source window (MANI runs worlds in a sandbox, so their origin is <code>null</code>), fades to dark and lands on “These people are real”. Backups: any second load inside the frame counts as the walk ending, and our own “Skip the walk” links always work. Full details: <code>MANI_LINK.md</code>.</p>
+<p><b>World prompt</b> (as recorded in our plan):</p>
+<pre>An imagined walk from a grey, foggy city street into a warm community garden at golden hour. Start on a cold monochrome pavement with bare walls and mist. A gravel path leads gradually into green: allotment beds, fruit trees, wildflowers, and a small circle of wooden benches where people could gather. Low amber sunlight, long shadows, soft mist lifting. Small human traces: a hand-painted "welcome" sign, bunting on a fence, a flask on a bench. No people. At the end of the path, a softly glowing circular portal. Mood: hopeful, calm, intimate. Palette: moss green, terracotta, warm amber, mist grey. First-person walking, gentle pace.</pre>
+<p class="note"><span class="todo">Team to confirm:</span> the final world (Coventry Edgelands trail: gate, bus shelter, iron fence, misty woodland, IRPH signage) was iterated from this prompt in MANI. Add the final prompt and the main iterations here before submitting.</p>
+
+<h2><span class="n">05</span>Sources and fact-check</h2>
+<p>Every number, quote and credit on the page comes from the IRPH Creator Lab brief (5 slides). The page invents no people, quotes, statistics or donation amounts, and choosing a programme in the ask does not claim the donation goes to that programme.</p>
+<table>
+  <thead><tr><th style="width:17%">Claim</th><th style="width:33%">Wording on page</th><th style="width:28%">Source</th><th style="width:8%">Page</th><th>Checked by</th></tr></thead>
+  <tbody>
+    <tr><td>People engaged</td><td>1,729 people engaged with activities, resources and events</td><td>IRPH Impact Report 2024–25, cited in brief slide 3</td><td>3, 10</td><td class="todo">________</td></tr>
+    <tr><td>Network members</td><td>789 network members</td><td>IRPH Impact Report 2024–25, cited in brief slide 3</td><td>3, 10</td><td class="todo">________</td></tr>
+    <tr><td>Countries</td><td>50+ countries represented</td><td>IRPH Impact Report 2024–25, cited in brief slide 3</td><td>3, 10</td><td class="todo">________</td></tr>
+    <tr><td>Participant quote</td><td>“EcoGPX® helped me get out of a dark spot I was in…” — Participant, EcoGPX Coventry Launchpad</td><td>Brief slide 3</td><td>3</td><td class="todo">________</td></tr>
+    <tr><td>Mission</td><td>“Creativity reconnects us.” and “Loneliness, inequality and disconnection affect how we live…”</td><td>Brief slide 2</td><td>2</td><td class="todo">________</td></tr>
+    <tr><td>How change happens</td><td>Listen / Create together / Connect, with their one-line descriptions</td><td>Brief slide 2</td><td>2</td><td class="todo">________</td></tr>
+    <tr><td>Programmes</td><td>Creative health · Arts Disability Network · EcoGPX® · Forum Theatre</td><td>Brief slide 2</td><td>2</td><td class="todo">________</td></tr>
+    <tr><td>The ask</td><td>“Help Intercultural Roots reach more people. Donate. Be part of what grows next.” and the donation URL</td><td>Brief slide 5</td><td>5</td><td class="todo">________</td></tr>
+    <tr><td>Charity number</td><td>Registered Charity No. 1179885</td><td>Brief slide 5</td><td>5</td><td class="todo">________</td></tr>
+  </tbody>
+</table>
+
+<h2><span class="n">06</span>AI use</h2>
+<table>
+  <thead><tr><th style="width:18%">Tool</th><th style="width:40%">What it did</th><th>What people decided, checked or fixed</th></tr></thead>
+  <tbody>
+    <tr><td>MANI Engine</td><td>Generated the imagined 3D garden walk from a written prompt.</td><td>Team iterated the world, set the spawn view and the exit behaviour, and tested that it embeds.</td></tr>
+    <tr><td>Claude (Claude Code)</td><td>Drafted HTML, CSS and JavaScript: the fog hero, the orb field, the scroll-driven steps, the progress bars, the footer’s sources panel, and fixes; reviewed the plan; helped merge team members’ versions.</td><td>The team chose the concept, wrote the plan, picked which version became the final page (Jack’s layout), and reviewed every change in a browser preview.</td></tr>
+    <tr><td class="todo">Other tools?</td><td colspan="2" class="todo">Add any other AI tools the team used (e.g. ChatGPT, Codex) and what for.</td></tr>
+  </tbody>
+</table>
+<h3>Where AI output was corrected or limited</h3>
+<ul>
+  <li><b>No copying.</b> We asked for the interactions of an award-winning agency site. The assistant declined to copy that site’s code or its commercial font, and wrote original interactions inspired by the same conventions instead (credited below).</li>
+  <li><b>Exact wording.</b> A draft quote used the emoji version of the ® symbol; it was corrected to the plain ® used in the brief. Brand colours were sampled from the brief PDF rather than guessed.</li>
+  <li><b>Bugs caught in testing:</b> photos inside hidden step panels never loaded; the photo frame stretched to the image’s shape; the first orb “push” was too weak to notice. All fixed and re-tested.</li>
+  <li><b>Honest numbers.</b> The progress bars show each counter’s own progress, not a comparison between the three stats, because they measure different things (people, members, countries).</li>
+  <li><b>Not AI-generated:</b> no people, photos, quotes or statistics. The photo is IRPH’s own, used with permission.</li>
+</ul>
+
+<h2><span class="n">07</span>Credits and permissions</h2>
+<ul>
+  <li><b>Photo:</b> EcoGPX Coventry, 2024. Image: Intercultural Roots. Supplied in the brief; permission to use it on the page confirmed with the organisers.</li>
+  <li><b>Other brief photos</b> (credited in the page footer as the brief lists them): Boal Forum Theatre, 2024. Image: Intercultural Roots. · EcoGPX Coventry, 2024. Photo: Kopal Gupta. · Bridging Cultures, Coventry, 2025. Image: Intercultural Roots.</li>
+  <li><b>Logo</b> and all wording: Intercultural Roots for Public Health, from the brief.</li>
+  <li><b>3D world:</b> an imagined space generated with MANI Engine; the page says so in its footer.</li>
+  <li><b>Fonts:</b> Instrument Serif, Inter, IBM Plex Mono (Google Fonts, SIL Open Font License).</li>
+  <li><b>Design inspiration:</b> award-site conventions, in particular Emotion Agency (emotion-agency.com, featured on Awwwards): large serif statements, mono index labels, rolling button labels. No code, fonts or assets were taken from it.</li>
+</ul>
+
+<h2><span class="n">08</span>Files</h2>
+<table>
+  <thead><tr><th style="width:26%">File</th><th>What it is</th></tr></thead>
+  <tbody>
+    <tr><td><code>index.html</code></td><td>The page: all markup, styles and scripts.</td></tr>
+    <tr><td><code>build.py</code></td><td>Inlines images; writes <code>dist/index.html</code> and <code>dist/mani-scene.html</code>.</td></tr>
+    <tr><td><code>dist/index.html</code></td><td>The submitted single file.</td></tr>
+    <tr><td><code>assets/</code></td><td><code>opening.jpg</code> (MANI spawn view), <code>ecogpx-coventry-group-2024.jpg</code>, <code>irph-logo.jpg</code>.</td></tr>
+    <tr><td><code>MANI_LINK.md</code></td><td>How the page enters and returns from the MANI walk.</td></tr>
+    <tr><td><code>PLAN.md</code></td><td>The team’s plan and task split.</td></tr>
+    <tr><td><code>WORKFLOW.md</code> / <code>docs/workflow.pdf</code></td><td>This document.</td></tr>
+  </tbody>
+</table>
+
+</body>
+</html>
